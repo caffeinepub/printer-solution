@@ -11,27 +11,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
-import type { Client } from '../../backend';
+import { Client } from '../../backend';
 
 interface ClientFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  client?: Client | null;
+  client?: Client;
 }
 
 export default function ClientFormDialog({ open, onOpenChange, client }: ClientFormDialogProps) {
   const [name, setName] = useState('');
   const [contactDetails, setContactDetails] = useState('');
   const [address, setAddress] = useState('');
-  const [error, setError] = useState('');
 
   const addClient = useAddClient();
   const updateClient = useUpdateClient();
-
-  const isEditing = !!client;
-  const mutation = isEditing ? updateClient : addClient;
 
   useEffect(() => {
     if (client) {
@@ -43,103 +37,103 @@ export default function ClientFormDialog({ open, onOpenChange, client }: ClientF
       setContactDetails('');
       setAddress('');
     }
-    setError('');
   }, [client, open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-
-    if (!name.trim() || !contactDetails.trim() || !address.trim()) {
-      setError('All fields are required');
-      return;
-    }
-
     try {
-      if (isEditing) {
+      if (client) {
         await updateClient.mutateAsync({
           id: client.id,
-          name: name.trim(),
-          contactDetails: contactDetails.trim(),
-          address: address.trim(),
+          name,
+          contactDetails,
+          address,
         });
       } else {
-        await addClient.mutateAsync({
-          name: name.trim(),
-          contactDetails: contactDetails.trim(),
-          address: address.trim(),
-        });
+        await addClient.mutateAsync({ name, contactDetails, address });
       }
       onOpenChange(false);
-    } catch (err) {
-      setError('Failed to save client. Please try again.');
+    } catch (error) {
+      console.error('Failed to save client:', error);
     }
   };
 
+  const isPending = addClient.isPending || updateClient.isPending;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="popout-surface dialog-animate sm:max-w-md">
-        <DialogHeader className="popout-header-accent">
-          <DialogTitle>{isEditing ? 'Edit Client' : 'Add New Client'}</DialogTitle>
-          <DialogDescription>
-            {isEditing ? 'Update client information' : 'Enter client details'}
+      <DialogContent className="sm:max-w-md bg-popover border-border">
+        <DialogHeader className="border-b border-primary pb-4">
+          <DialogTitle className="text-foreground">
+            {client ? 'Edit Client' : 'Add New Client'}
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground">
+            {client ? 'Update client information' : 'Enter client details to add them to your system'}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5 pt-2">
           <div className="space-y-2">
-            <Label htmlFor="name">Client Name *</Label>
+            <Label htmlFor="name" className="text-foreground">
+              Client Name *
+            </Label>
             <Input
               id="name"
               placeholder="Enter client name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              disabled={mutation.isPending}
-              className="focus-visible:ring-primary"
+              required
+              disabled={isPending}
+              className="bg-background border-border focus-visible:ring-primary"
             />
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="contact">Contact Details *</Label>
+            <Label htmlFor="contact" className="text-foreground">
+              Contact Details *
+            </Label>
             <Input
               id="contact"
               placeholder="Phone, email, etc."
               value={contactDetails}
               onChange={(e) => setContactDetails(e.target.value)}
-              disabled={mutation.isPending}
-              className="focus-visible:ring-primary"
+              required
+              disabled={isPending}
+              className="bg-background border-border focus-visible:ring-primary"
             />
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="address">Address *</Label>
+            <Label htmlFor="address" className="text-foreground">
+              Address *
+            </Label>
             <Textarea
               id="address"
               placeholder="Enter full address"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              disabled={mutation.isPending}
+              required
+              disabled={isPending}
               rows={3}
-              className="focus-visible:ring-primary"
+              className="resize-none bg-background border-border focus-visible:ring-primary"
             />
           </div>
 
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          <div className="flex gap-2">
+          <div className="flex gap-3 pt-2">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              disabled={mutation.isPending}
-              className="flex-1 btn-interactive"
+              disabled={isPending}
+              className="flex-1 bg-secondary text-secondary-foreground border-border"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={mutation.isPending} className="flex-1 btn-interactive">
-              {mutation.isPending ? 'Saving...' : isEditing ? 'Update' : 'Add Client'}
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="flex-1 bg-primary text-primary-foreground"
+            >
+              {isPending ? 'Saving...' : client ? 'Update Client' : 'Add Client'}
             </Button>
           </div>
         </form>

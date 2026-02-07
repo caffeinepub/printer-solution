@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* Refined orange and neutral theme with OKLCH */
+    /* Sober orange and neutral theme with OKLCH */
     --background: oklch(98% 0.003 60);
     --foreground: oklch(18% 0.01 60);
 
@@ -14,7 +14,7 @@
     --popover: oklch(100% 0 0);
     --popover-foreground: oklch(18% 0.01 60);
 
-    --primary: oklch(62% 0.19 40);
+    --primary: oklch(65% 0.21 45);
     --primary-foreground: oklch(100% 0 0);
 
     --secondary: oklch(94% 0.01 60);
@@ -37,7 +37,7 @@
 
     --border: oklch(90% 0.005 60);
     --input: oklch(90% 0.005 60);
-    --ring: oklch(62% 0.19 40);
+    --ring: oklch(65% 0.21 45);
 
     --radius: 0.5rem;
   }
@@ -52,7 +52,7 @@
     --popover: oklch(16% 0.01 60);
     --popover-foreground: oklch(96% 0.003 60);
 
-    --primary: oklch(68% 0.19 40);
+    --primary: oklch(70% 0.21 45);
     --primary-foreground: oklch(100% 0 0);
 
     --secondary: oklch(22% 0.01 60);
@@ -75,7 +75,7 @@
 
     --border: oklch(26% 0.01 60);
     --input: oklch(26% 0.01 60);
-    --ring: oklch(68% 0.19 40);
+    --ring: oklch(70% 0.21 45);
   }
 }
 
@@ -88,62 +88,37 @@
   }
 }
 
+/* Global animation disable */
+*, *::before, *::after {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+}
+
 @layer components {
-  /* Dashboard Tab Styling - Clean surface with vibrant active state */
-  .dashboard-tabs-list {
-    @apply bg-card border border-border shadow-sm rounded-xl p-1.5;
-  }
-
-  .dashboard-tab-trigger {
-    @apply relative rounded-lg px-4 py-2.5;
-    @apply transition-colors duration-200;
-    @apply hover:bg-primary/10;
-    @apply data-[state=active]:bg-primary/20;
-    @apply data-[state=active]:text-primary;
-    @apply data-[state=active]:font-semibold;
-    @apply data-[state=active]:shadow-sm;
-    @apply focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
-  }
-
-  .dashboard-tab-trigger[data-state="active"]::after {
-    content: '';
-    @apply absolute bottom-0 left-2 right-2 h-1 bg-primary rounded-full;
-  }
-
-  /* Dialog Surface Styling - Solid, readable surfaces in both modes */
-  .dialog-surface {
-    @apply bg-card text-card-foreground border-border;
-  }
-
-  .dialog-header {
-    @apply border-b border-border/60 pb-4 mb-2;
-  }
-
   /* Input Focus Styling */
   .input-focus {
     @apply focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1;
   }
 
-  /* Page Surface - Consistent background for all main content areas */
+  /* Page Surface - Consistent opaque background for all main content areas */
   .page-surface {
-    @apply bg-card border border-border rounded-xl shadow-sm;
+    @apply bg-card border border-border rounded-xl shadow-lg;
   }
 
-  /* Interaction utilities */
+  /* Interaction utilities - no transitions */
   .btn-interactive {
-    @apply transition-all duration-200;
     @apply focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
-    @apply hover:shadow-md;
   }
 
   .row-interactive {
-    @apply cursor-pointer transition-colors duration-150;
-    @apply hover:bg-primary/10;
+    @apply cursor-pointer;
+    @apply hover:bg-accent;
   }
 
   .card-interactive {
-    @apply transition-shadow duration-200;
-    @apply hover:shadow-md;
+    @apply focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
   }
 
   /* Section styling for dialogs */
@@ -152,7 +127,33 @@
   }
 
   .content-block {
-    @apply border-l-2 border-primary/30 pl-4 py-2;
+    @apply border-l-2 border-primary pl-4 py-2;
+  }
+
+  /* Popout surface styling for detail dialogs - fully opaque */
+  .popout-surface {
+    @apply bg-popover;
+  }
+
+  .popout-header-accent {
+    @apply border-b border-primary pb-4;
+  }
+
+  .popout-section-title {
+    @apply text-sm font-semibold text-foreground border-l-4 border-primary pl-3 py-1;
+  }
+
+  /* Section container for single-page layout */
+  .dashboard-section {
+    @apply mb-12 last:mb-0;
+  }
+
+  .dashboard-section-header {
+    @apply mb-6 pb-3 border-b-2 border-primary;
+  }
+
+  .dashboard-section-title {
+    @apply text-2xl font-bold text-foreground;
   }
 }
 
@@ -166,6 +167,7 @@
   body {
     margin: 0;
     padding: 0;
+    background: white !important;
   }
 
   /* Hide everything except print containers */

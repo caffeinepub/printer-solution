@@ -33,7 +33,7 @@ export default function QuotationDetailDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="popout-surface dialog-animate max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="popout-surface max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader className="popout-header-accent">
             <DialogTitle className="text-xl">Quotation Details</DialogTitle>
             <DialogDescription>

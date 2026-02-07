@@ -13,7 +13,7 @@ export default function ClientsPage() {
   const { data: clients = [], isLoading } = useGetAllClients();
   const deleteClient = useDeleteClient();
   const [showForm, setShowForm] = useState(false);
-  const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [editingClient, setEditingClient] = useState<Client | undefined>(undefined);
   const [viewingClient, setViewingClient] = useState<Client | null>(null);
   const [deletingClient, setDeletingClient] = useState<Client | null>(null);
 
@@ -23,7 +23,7 @@ export default function ClientsPage() {
   };
 
   const handleAdd = () => {
-    setEditingClient(null);
+    setEditingClient(undefined);
     setShowForm(true);
   };
 
@@ -144,7 +144,6 @@ export default function ClientsPage() {
         title="Delete Client"
         description={`Are you sure you want to delete ${deletingClient?.name}? This action cannot be undone.`}
         confirmText="Delete"
-        isLoading={deleteClient.isPending}
       />
     </>
   );

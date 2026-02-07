@@ -3,20 +3,22 @@
   "projectStateVersion": 3,
   "summary": "New project",
   "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Build/deployment process hit a snag (AI hiccup) while applying UI dialog/tab changes"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-remove-the-profile-setup-flow-so-authenticated-users-are-never-prompted-to-complete-a-set-up-your-profile-dialog-and-the-app-remains-usable-even-when-the-caller-has-no-saved-profile",
-      "title": "Remove the profile setup flow so authenticated users are never prompted to complete a \"Set up your profile\" dialog, and the app remains usable even when the caller has no saved profile.",
+      "id": "feature-enable-the-disabled-add-tab-entry-point-wherever-it-appears-in-dialogs-and-dialog-driven-workflows-e-g-any-tabs-trigger-segment-button-labeled-add-that-is-currently-disabled-so-users-can-open-the-add-create-form-without-being-blocked",
+      "title": "Enable the disabled “Add” tab/entry point wherever it appears in dialogs and dialog-driven workflows (e.g., any Tabs trigger/segment/button labeled “Add” that is currently disabled), so users can open the add/create form without being blocked.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-update-change-the-user-interface-with-a-cohesive-consistent-visual-refresh-across-the-login-screen-header-tab-navigation-page-surfaces-and-dialogs-colors-typography-spacing-and-component-styling-use-english-for-all-user-facing-text",
-      "title": "Update/change the user interface with a cohesive, consistent visual refresh across the login screen, header, tab navigation, page surfaces, and dialogs (colors, typography, spacing, and component styling). Use English for all user-facing text.",
+      "id": "feature-remove-transparency-from-all-popout-dialog-boxes-and-forms-by-ensuring-dialog-surfaces-popovers-and-form-containers-use-fully-opaque-theme-colors-no-tailwind-opacity-modifiers-like-10-20-50-and-no-translucent-backdrop-blur-styling-on-dialog-content-apply-this-consistently-across-all-dialogs-e-g-client-product-quotation-company-user-management-confirm-print-preview-dialogs-and-any-nested-popovers-used-inside-dialogs-e-g-select-dropdown-content",
+      "title": "Remove transparency from all popout dialog boxes and forms by ensuring dialog surfaces, popovers, and form containers use fully opaque theme colors (no Tailwind opacity modifiers like /10, /20, /50 and no translucent/backdrop-blur styling on dialog content). Apply this consistently across all dialogs (e.g., client/product/quotation/company/user management/confirm/print preview dialogs) and any nested popovers used inside dialogs (e.g., select dropdown content).",
       "reqIds": [
         "REQ-2"
       ],
@@ -26,12 +28,18 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Remove the \"setup profile\" option and update/change the user interface accordingly",
+      "summary": "Enable the disabled “Add” tab across all dialogs",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Remove transparency from all popout dialog boxes and forms",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Remove profile setup flow and refresh UI styling",
+  "projectName": "Enable disabled “Add” tab in dialogs and remove transparency from all popout dialogs/forms",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

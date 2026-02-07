@@ -12,41 +12,37 @@ import {
 interface ConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: () => void | Promise<void>;
   title: string;
   description: string;
+  onConfirm: () => void;
   confirmText?: string;
   cancelText?: string;
-  isLoading?: boolean;
 }
 
 export default function ConfirmDialog({
   open,
   onOpenChange,
-  onConfirm,
   title,
   description,
+  onConfirm,
   confirmText = 'Confirm',
   cancelText = 'Cancel',
-  isLoading = false,
 }: ConfirmDialogProps) {
-  const handleConfirm = async () => {
-    await onConfirm();
-  };
-
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="dialog-surface">
-        <AlertDialogHeader className="dialog-header">
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+      <AlertDialogContent className="bg-popover border-border">
+        <AlertDialogHeader className="border-b border-primary pb-4">
+          <AlertDialogTitle className="text-foreground">{title}</AlertDialogTitle>
+          <AlertDialogDescription className="text-muted-foreground">
+            {description}
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading} className="btn-interactive">
+          <AlertDialogCancel className="bg-secondary text-secondary-foreground border-border">
             {cancelText}
           </AlertDialogCancel>
-          <AlertDialogAction onClick={handleConfirm} disabled={isLoading} className="btn-interactive">
-            {isLoading ? 'Processing...' : confirmText}
+          <AlertDialogAction onClick={onConfirm} className="bg-primary text-primary-foreground">
+            {confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

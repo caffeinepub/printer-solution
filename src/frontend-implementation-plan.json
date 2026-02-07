@@ -1,78 +1,112 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Remove profile setup gating and apply cohesive UI refresh",
+  "title": "Enable “Add” dialog entry points and make all dialog/popover surfaces fully opaque",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Eliminate the profile setup modal flow and ensure the app works when the caller has no saved profile.",
+      "summary": "Enable any disabled “Add” tab/trigger in dialog-driven workflows so the add/create form can always be opened.",
       "acceptanceCriteria": [
-        "After login, the app navigates directly to the main AppShell without showing any profile setup modal/dialog.",
-        "There are no UI elements labeled \"Set up your profile\" or \"Welcome! Set up your profile\" in the running app.",
-        "If getCallerUserProfile returns null, the header area does not show a broken/empty profile section and the rest of the app functions normally (tabs/pages load)."
+        "In every dialog or dialog-driven workflow where an “Add” tab/trigger exists, it is not disabled and can be selected/clicked.",
+        "Selecting the “Add” tab/trigger reliably reveals the add/create form content (no hidden/blocked state).",
+        "No console errors occur when switching to the “Add” tab/trigger."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/components/clients/ClientDetailDialog.tsx",
           "operation": "modify",
-          "description": "Remove all conditional rendering/wiring for the ProfileSetupDialog (no gating UI when getCallerUserProfile is null); authenticated users should always render AppShell directly. Keep existing Internet Identity login/logout behavior and query cache clearing aligned with the selected \"authorization\" component guidance. Verify the component's usage instructions before implementing."
+          "description": "Audit dialog-driven UI within the client detail workflow for any Tabs triggers/segments/buttons labeled “Add” that are disabled; remove the disabled state and ensure selecting it reveals the intended add/create form content without errors."
         },
         {
-          "path": "frontend/src/components/AppShell.tsx",
+          "path": "frontend/src/components/clients/ClientFormDialog.tsx",
           "operation": "modify",
-          "description": "Harden header rendering for missing userProfile (null) by showing a stable fallback identity block (e.g., generic label) without empty/broken UI; ensure all tabs/pages still render and remain usable. Verify the component's usage instructions before implementing."
+          "description": "Audit the client add/edit dialog for any disabled “Add” entry points (e.g., tab triggers or segmented controls inside the dialog); ensure “Add” is enabled and that the create form is visible when selected."
         },
         {
-          "path": "frontend/src/components/ProfileSetupDialog.tsx",
-          "operation": "delete",
-          "description": "Remove the ProfileSetupDialog component entirely to ensure no residual \"Welcome! Set up your profile\" / \"Set up your profile\" strings or UI remain in the app. Verify the component's usage instructions before implementing."
+          "path": "frontend/src/components/inventory/ProductFormDialog.tsx",
+          "operation": "modify",
+          "description": "Audit the product create/edit dialog for any disabled “Add” tab/trigger patterns; enable “Add” selection/click and ensure it reliably shows the create form content."
+        },
+        {
+          "path": "frontend/src/components/quotations/QuotationFormDialog.tsx",
+          "operation": "modify",
+          "description": "Audit the quotation creation dialog for any disabled “Add” entry points (tabs/segments/buttons labeled “Add”); ensure they are enabled and correctly reveal the create form content."
+        },
+        {
+          "path": "frontend/src/components/quotations/QuotationDetailDialog.tsx",
+          "operation": "modify",
+          "description": "Audit the quotation detail dialog for any disabled “Add” tab/trigger (including nested dialog-driven actions); enable it and ensure the add/create content renders correctly when selected."
+        },
+        {
+          "path": "frontend/src/components/company/CompanySettingsDialog.tsx",
+          "operation": "modify",
+          "description": "Audit the company settings dialog for any disabled “Add” entry points (e.g., adding address blocks, adding logo, adding records) and ensure “Add” triggers are enabled and reveal the intended form sections without console errors."
+        },
+        {
+          "path": "frontend/src/components/UserManagementDialog.tsx",
+          "operation": "modify",
+          "description": "Audit the user management dialog for any disabled “Add” entry points (e.g., add user/add role flows); ensure “Add” triggers are enabled and reveal the correct content/state reliably."
+        },
+        {
+          "path": "frontend/src/components/billing/InvoicePrintPreviewDialog.tsx",
+          "operation": "modify",
+          "description": "Audit the invoice print preview dialog workflow for any disabled “Add” tab/trigger patterns (including nested popovers/dialogs); ensure “Add” is enabled and that selecting it reveals the intended create/add content without errors."
+        },
+        {
+          "path": "frontend/src/components/quotations/QuotationPrintPreviewDialog.tsx",
+          "operation": "modify",
+          "description": "Audit the quotation print preview dialog workflow for any disabled “Add” tab/trigger patterns; enable “Add” and ensure it reliably reveals add/create form content when selected."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Apply a cohesive visual refresh across login, header, tabs, page surfaces, and dialogs with consistent theme, spacing, and readable dialog surfaces in light/dark mode (English-only UI text).",
+      "summary": "Ensure all dialog, popover, and form container surfaces are fully opaque (no opacity modifiers or backdrop-blur) across the app, including nested select dropdown content within dialogs.",
       "acceptanceCriteria": [
-        "The updated UI applies a consistent theme across: LoginPage, AppShell header, TabsList/TabsTrigger navigation, and page content containers.",
-        "Dialogs/popups use a solid, non-transparent surface with readable foreground text in both light and dark mode.",
-        "Dashboard tabs have a consistent accent color for active/hover/focus states and an obvious active indicator.",
-        "No user-facing strings introduced by this change are non-English."
+        "All dialog surfaces (DialogContent) render with fully opaque backgrounds in both light and dark modes.",
+        "No dialog/form/popover container classes include opacity modifiers (e.g., bg-*/50) or backdrop-blur/translucent effects.",
+        "Nested popovers used within dialogs (e.g., SelectContent) are also fully opaque and readable."
       ],
       "file_operations": [
         {
           "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Refresh global theme tokens and shared utility classes to ensure consistent typography/spacing and a cohesive accent system; update dialog surface styles so dialogs/popups use solid, non-transparent surfaces with readable foreground in both light and dark mode (avoid dark-mode overrides that force unreadable contrast). Keep styling changes via CSS/classes only (do not modify shadcn ui sources under frontend/src/components/ui). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/tailwind.config.js",
-          "operation": "modify",
-          "description": "Adjust Tailwind theme extensions as needed to support the refreshed design system (e.g., shadows/radii/typography consistency) without introducing new global stylesheet entry points. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/LoginPage.tsx",
-          "operation": "modify",
-          "description": "Update the login screen styling to match the refreshed theme (layout, spacing, card surface, button styling), keeping all user-facing text in English. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/AppShell.tsx",
-          "operation": "modify",
-          "description": "Update header, tab navigation, and page surface styling for consistent spacing/typography and clearer active/hover/focus states on dashboard tabs (accent color + obvious active indicator), aligning with the refreshed theme. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/company/CompanySettingsDialog.tsx",
-          "operation": "modify",
-          "description": "Align dialog styling (surface, header, form spacing, buttons) with the refreshed dialog theme to ensure solid non-transparent surfaces and readable text in light/dark mode; keep all strings in English. Verify the component's usage instructions before implementing."
+          "description": "Add/adjust global styling for dialog and popover surfaces to enforce fully opaque backgrounds and remove any backdrop-filter effects on content surfaces (while keeping within existing global styling entry points). Ensure custom classes used by dialogs (e.g., popout-surface/popout-header-accent/popout section styling) resolve to opaque theme colors in light/dark modes."
         },
         {
           "path": "frontend/src/components/UserManagementDialog.tsx",
           "operation": "modify",
-          "description": "Align dialog styling (surface, header, form controls, alerts) with refreshed dialog theme for readability and consistency across light/dark mode; ensure any new strings remain English. Verify the component's usage instructions before implementing."
+          "description": "Make the dialog surface fully opaque by applying explicit opaque container classes to DialogContent. Ensure nested SelectContent uses an opaque background and border. Replace any translucent utility usage (e.g., bg-*/10) with fully opaque equivalents so the dialog and its nested popovers are readable."
+        },
+        {
+          "path": "frontend/src/components/quotations/QuotationFormDialog.tsx",
+          "operation": "modify",
+          "description": "Ensure all nested popover surfaces (e.g., SelectContent) and dialog content containers use fully opaque theme backgrounds without opacity modifiers or backdrop-blur styling."
+        },
+        {
+          "path": "frontend/src/components/clients/ClientFormDialog.tsx",
+          "operation": "modify",
+          "description": "Verify DialogContent and form container classes are fully opaque and do not include any Tailwind opacity modifiers or backdrop-blur/translucent effects; normalize to opaque theme background classes consistently."
+        },
+        {
+          "path": "frontend/src/components/inventory/ProductFormDialog.tsx",
+          "operation": "modify",
+          "description": "Verify DialogContent, ScrollArea wrappers, and any nested popovers used in the product form are fully opaque and do not use opacity modifiers or backdrop-blur styling; normalize to opaque theme background classes."
+        },
+        {
+          "path": "frontend/src/components/clients/ClientDetailDialog.tsx",
+          "operation": "modify",
+          "description": "Ensure the dialog surface classes used by this popout (e.g., popout-surface and related section containers) render fully opaque with no opacity modifiers or backdrop-blur effects, consistent in light/dark modes."
         },
         {
           "path": "frontend/src/components/dialogs/ConfirmDialog.tsx",
           "operation": "modify",
-          "description": "Ensure confirmation dialogs use the refreshed solid dialog surface styling and consistent button/typography treatment; preserve English-only labels. Verify the component's usage instructions before implementing."
+          "description": "Verify the confirmation dialog surface is fully opaque and that no container utilities introduce translucency or backdrop blur; align with the app-wide opaque dialog surface convention."
+        },
+        {
+          "path": "frontend/src/components/company/CompanySettingsDialog.tsx",
+          "operation": "modify",
+          "description": "Ensure DialogContent and any nested popover surfaces inside the settings form render with fully opaque backgrounds and no opacity-modified utility classes; keep consistency across light/dark modes."
         }
       ]
     }

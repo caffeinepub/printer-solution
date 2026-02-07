@@ -1,6 +1,7 @@
 import { useInternetIdentity } from './hooks/useInternetIdentity';
 import LoginPage from './pages/LoginPage';
 import AppShell from './components/AppShell';
+import { Loader } from 'lucide-react';
 
 export default function App() {
   const { identity, isInitializing } = useInternetIdentity();
@@ -12,7 +13,7 @@ export default function App() {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
+          <Loader className="mb-4 h-12 w-12 text-primary mx-auto" />
           <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>

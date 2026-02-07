@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useGetCallerUserProfile, useIsCallerAdmin, useGetCompanySettings } from '../hooks/useQueries';
 import { useQueryClient } from '@tanstack/react-query';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { LogOut, Users, Heart, Settings } from 'lucide-react';
 import ClientsPage from '../pages/clients/ClientsPage';
@@ -20,7 +19,6 @@ export default function AppShell() {
   const { data: userProfile } = useGetCallerUserProfile();
   const { data: isAdmin } = useIsCallerAdmin();
   const { data: companySettings } = useGetCompanySettings();
-  const [activeTab, setActiveTab] = useState('clients');
   const [showUserManagement, setShowUserManagement] = useState(false);
   const [showCompanySettings, setShowCompanySettings] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
@@ -49,7 +47,7 @@ export default function AppShell() {
   const displayRole = isAdmin ? 'Administrator' : 'User';
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Header */}
       <header className="border-b border-border bg-card shadow-sm">
         <div className="container mx-auto px-6 py-5">
@@ -68,7 +66,7 @@ export default function AppShell() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="text-right px-3 py-2 rounded-lg bg-muted/50">
+              <div className="text-right px-3 py-2 rounded-lg bg-muted border border-border">
                 <p className="text-sm font-semibold text-foreground">{displayName}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {displayRole}
@@ -80,7 +78,6 @@ export default function AppShell() {
                     variant="outline"
                     size="sm"
                     onClick={() => setShowCompanySettings(true)}
-                    className="btn-interactive"
                   >
                     <Settings className="mr-2 h-4 w-4" />
                     Company
@@ -89,14 +86,13 @@ export default function AppShell() {
                     variant="outline"
                     size="sm"
                     onClick={() => setShowUserManagement(true)}
-                    className="btn-interactive"
                   >
                     <Users className="mr-2 h-4 w-4" />
                     Users
                   </Button>
                 </>
               )}
-              <Button variant="outline" size="sm" onClick={handleLogout} className="btn-interactive">
+              <Button variant="outline" size="sm" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
               </Button>
@@ -105,54 +101,69 @@ export default function AppShell() {
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main Content - All Sections Visible */}
       <main className="container mx-auto px-6 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="dashboard-tabs-list grid w-full grid-cols-6 mb-8">
-            <TabsTrigger value="clients" className="dashboard-tab-trigger">Clients</TabsTrigger>
-            <TabsTrigger value="quotations" className="dashboard-tab-trigger">Quotations</TabsTrigger>
-            <TabsTrigger value="products" className="dashboard-tab-trigger">Products</TabsTrigger>
-            <TabsTrigger value="inventory" className="dashboard-tab-trigger">Inventory</TabsTrigger>
-            <TabsTrigger value="billing" className="dashboard-tab-trigger">Billing</TabsTrigger>
-            <TabsTrigger value="accounts" className="dashboard-tab-trigger">Accounts</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="clients" className="mt-0">
+        <div className="space-y-12">
+          {/* Clients Section */}
+          <section id="clients" className="dashboard-section">
+            <div className="dashboard-section-header">
+              <h2 className="dashboard-section-title">Clients</h2>
+            </div>
             <div className="page-surface p-6">
               <ClientsPage />
             </div>
-          </TabsContent>
+          </section>
 
-          <TabsContent value="quotations" className="mt-0">
+          {/* Quotations Section */}
+          <section id="quotations" className="dashboard-section">
+            <div className="dashboard-section-header">
+              <h2 className="dashboard-section-title">Quotations</h2>
+            </div>
             <div className="page-surface p-6">
               <QuotationsPage />
             </div>
-          </TabsContent>
+          </section>
 
-          <TabsContent value="products" className="mt-0">
+          {/* Products Section */}
+          <section id="products" className="dashboard-section">
+            <div className="dashboard-section-header">
+              <h2 className="dashboard-section-title">Products</h2>
+            </div>
             <div className="page-surface p-6">
               <ProductsPage />
             </div>
-          </TabsContent>
+          </section>
 
-          <TabsContent value="inventory" className="mt-0">
+          {/* Inventory Section */}
+          <section id="inventory" className="dashboard-section">
+            <div className="dashboard-section-header">
+              <h2 className="dashboard-section-title">Inventory</h2>
+            </div>
             <div className="page-surface p-6">
               <InventoryPage />
             </div>
-          </TabsContent>
+          </section>
 
-          <TabsContent value="billing" className="mt-0">
+          {/* Billing Section */}
+          <section id="billing" className="dashboard-section">
+            <div className="dashboard-section-header">
+              <h2 className="dashboard-section-title">Billing</h2>
+            </div>
             <div className="page-surface p-6">
               <BillingPage />
             </div>
-          </TabsContent>
+          </section>
 
-          <TabsContent value="accounts" className="mt-0">
+          {/* Accounts Section */}
+          <section id="accounts" className="dashboard-section">
+            <div className="dashboard-section-header">
+              <h2 className="dashboard-section-title">Accounts</h2>
+            </div>
             <div className="page-surface p-6">
               <AccountsPage />
             </div>
-          </TabsContent>
-        </Tabs>
+          </section>
+        </div>
       </main>
 
       {/* Footer */}

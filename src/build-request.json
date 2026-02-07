@@ -1,55 +1,56 @@
 {
   "kind": "build_request",
-  "title": "Remove profile setup flow and refresh UI styling",
+  "title": "Enable disabled “Add” tab in dialogs and remove transparency from all popout dialogs/forms",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Remove the profile setup flow so authenticated users are never prompted to complete a \"Set up your profile\" dialog, and the app remains usable even when the caller has no saved profile.",
+      "text": "Enable the disabled “Add” tab/entry point wherever it appears in dialogs and dialog-driven workflows (e.g., any Tabs trigger/segment/button labeled “Add” that is currently disabled), so users can open the add/create form without being blocked.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-6",
+          "msg-9"
         ],
         "quotes": [
-          "remove setup profile  option"
+          "add  tab is diabled in all dialog enable it and remove trancparency from all popout dialog box and forms and enable add tab",
+          "yes"
         ]
       },
       "acceptanceCriteria": [
-        "After login, the app navigates directly to the main AppShell without showing any profile setup modal/dialog.",
-        "There are no UI elements labeled \"Set up your profile\" or \"Welcome! Set up your profile\" in the running app.",
-        "If getCallerUserProfile returns null, the header area does not show a broken/empty profile section and the rest of the app functions normally (tabs/pages load)."
+        "In every dialog or dialog-driven workflow where an “Add” tab/trigger exists, it is not disabled and can be selected/clicked.",
+        "Selecting the “Add” tab/trigger reliably reveals the add/create form content (no hidden/blocked state).",
+        "No console errors occur when switching to the “Add” tab/trigger."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Update/change the user interface with a cohesive, consistent visual refresh across the login screen, header, tab navigation, page surfaces, and dialogs (colors, typography, spacing, and component styling). Use English for all user-facing text.",
+      "text": "Remove transparency from all popout dialog boxes and forms by ensuring dialog surfaces, popovers, and form containers use fully opaque theme colors (no Tailwind opacity modifiers like /10, /20, /50 and no translucent/backdrop-blur styling on dialog content). Apply this consistently across all dialogs (e.g., client/product/quotation/company/user management/confirm/print preview dialogs) and any nested popovers used inside dialogs (e.g., select dropdown content).",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-6"
         ],
         "quotes": [
-          "change user interface"
+          "remove trancparency from all popout dialog box and forms"
         ]
       },
       "acceptanceCriteria": [
-        "The updated UI applies a consistent theme across: LoginPage, AppShell header, TabsList/TabsTrigger navigation, and page content containers.",
-        "Dialogs/popups use a solid, non-transparent surface with readable foreground text in both light and dark mode.",
-        "Dashboard tabs have a consistent accent color for active/hover/focus states and an obvious active indicator.",
-        "No user-facing strings introduced by this change are non-English."
+        "All dialog surfaces (DialogContent) render with fully opaque backgrounds in both light and dark modes.",
+        "No dialog/form/popover container classes include opacity modifiers (e.g., bg-*/50) or backdrop-blur/translucent effects.",
+        "Nested popovers used within dialogs (e.g., SelectContent) are also fully opaque and readable."
       ]
     }
   ],
   "constraints": [
-    "Do not modify files under frontend/src/components/ui (Shadcn UI sources); compose them via props/className or via project CSS.",
-    "Do not edit frontend/src/hooks/useInternetIdentity.ts / .tsx, frontend/src/hooks/useActor.ts, or frontend/src/main.tsx (immutable paths).",
-    "Keep backend architecture as a single Motoko actor; do not introduce additional canisters/services."
+    "Do not edit files under frontend/src/components/ui (Shadcn UI components must be composed, not modified).",
+    "Do not modify frontend immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
+    "Backend must remain single-actor; no backend changes are required for these UI fixes."
   ],
   "nonGoals": [
-    "Do not add new authentication methods beyond Internet Identity.",
-    "Do not add new profile editing features/screens unless explicitly requested.",
-    "Do not change backend data models or add migrations as part of this UI-only request."
+    "Adding new backend data models or changing Motoko stable state.",
+    "Introducing new navigation patterns unrelated to enabling the existing “Add” tab/entry point.",
+    "Changing authentication/Internet Identity behavior."
   ],
   "imageRequirements": {
     "required": [],

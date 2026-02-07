@@ -23,7 +23,7 @@ export default function ProductDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="popout-surface dialog-animate max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="popout-surface max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="popout-header-accent">
           <DialogTitle className="text-xl">{product.name}</DialogTitle>
           <DialogDescription>Product details and specifications</DialogDescription>
@@ -112,7 +112,7 @@ export default function ProductDetailDialog({
 
           {/* Actions */}
           <div className="flex justify-end pt-4 border-t border-border">
-            <Button onClick={() => onOpenChange(false)} className="btn-interactive">
+            <Button variant="outline" onClick={() => onOpenChange(false)} className="btn-interactive">
               Close
             </Button>
           </div>

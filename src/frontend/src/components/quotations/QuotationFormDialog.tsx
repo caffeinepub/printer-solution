@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useGetAllClients, useGetAllProducts, useCreateQuotation } from '../../hooks/useQueries';
+import { useCreateQuotation, useGetAllClients, useGetAllProducts } from '../../hooks/useQueries';
 import {
   Dialog,
   DialogContent,
@@ -11,10 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface QuotationFormDialogProps {
   open: boolean;
@@ -22,13 +20,9 @@ interface QuotationFormDialogProps {
 }
 
 export default function QuotationFormDialog({ open, onOpenChange }: QuotationFormDialogProps) {
-  const { data: clients = [] } = useGetAllClients();
-  const { data: products = [] } = useGetAllProducts();
-  const createQuotation = useCreateQuotation();
-
   const [clientId, setClientId] = useState('');
-  const [productId, setProductId] = useState('');
-  const [productName, setProductName] = useState('');
+  const [selectedProductId, setSelectedProductId] = useState('');
+  const [product, setProduct] = useState('');
   const [productType, setProductType] = useState('');
   const [size, setSize] = useState('');
   const [printingSide, setPrintingSide] = useState('');
@@ -44,13 +38,16 @@ export default function QuotationFormDialog({ open, onOpenChange }: QuotationFor
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
   const [pricePerUnit, setPricePerUnit] = useState('');
-  const [error, setError] = useState('');
+
+  const { data: clients = [] } = useGetAllClients();
+  const { data: products = [] } = useGetAllProducts();
+  const createQuotation = useCreateQuotation();
 
   useEffect(() => {
     if (!open) {
       setClientId('');
-      setProductId('');
-      setProductName('');
+      setSelectedProductId('');
+      setProduct('');
       setProductType('');
       setSize('');
       setPrintingSide('');
@@ -66,58 +63,50 @@ export default function QuotationFormDialog({ open, onOpenChange }: QuotationFor
       setQuantity('');
       setPrice('');
       setPricePerUnit('');
-      setError('');
     }
   }, [open]);
 
-  const handleProductSelect = (selectedProductId: string) => {
-    setProductId(selectedProductId);
-    const product = products.find((p) => p.id.toString() === selectedProductId);
-    if (product) {
-      setProductName(product.name);
-      setProductType(product.productSpec.productType);
-      setSize(product.productSpec.size);
-      setPrintingSide(product.productSpec.printingSide);
-      setLamination(product.productSpec.lamination);
-      setSpotUV(product.productSpec.spotUV);
-      setFoiling(product.productSpec.foiling);
-      setQuantity(product.defaultQuotationQuantity.toString());
-      setPricePerUnit(product.pricePerUnit.toString());
+  const handleProductSelect = (productId: string) => {
+    setSelectedProductId(productId);
+    const selectedProduct = products.find((p) => p.id.toString() === productId);
+    if (selectedProduct) {
+      setProduct(selectedProduct.name);
+      setProductType(selectedProduct.productSpec.productType);
+      setSize(selectedProduct.productSpec.size);
+      setPrintingSide(selectedProduct.productSpec.printingSide);
+      setLamination(selectedProduct.productSpec.lamination);
+      setSpotUV(selectedProduct.productSpec.spotUV);
+      setFoiling(selectedProduct.productSpec.foiling);
+      setQuantity(selectedProduct.defaultQuotationQuantity.toString());
+      setPricePerUnit(selectedProduct.pricePerUnit.toString());
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-
-    if (!clientId || !productName.trim() || !quantity || !price || !pricePerUnit) {
-      setError('Please fill in all required fields');
-      return;
-    }
-
     try {
       await createQuotation.mutateAsync({
         clientId: BigInt(clientId),
-        product: productName.trim(),
-        productType: productType.trim(),
-        size: size.trim(),
-        printingSide: printingSide.trim(),
-        lamination: lamination.trim(),
+        product,
+        productType,
+        size,
+        printingSide,
+        lamination,
         spotUV,
         foiling,
-        pages: BigInt(pages || '0'),
-        paperType: paperType.trim(),
-        paperGSM: paperGSM.trim(),
+        pages: BigInt(pages),
+        paperType,
+        paperGSM,
         pageNumbering,
-        laminationType: laminationType.trim(),
-        bindingType: bindingType.trim(),
+        laminationType,
+        bindingType,
         quantity: BigInt(quantity),
         price: parseFloat(price),
         pricePerUnit: parseFloat(pricePerUnit),
       });
       onOpenChange(false);
-    } catch (err) {
-      setError('Failed to create quotation. Please try again.');
+    } catch (error) {
+      console.error('Failed to create quotation:', error);
     }
   };
 
@@ -125,100 +114,128 @@ export default function QuotationFormDialog({ open, onOpenChange }: QuotationFor
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="popout-surface dialog-animate max-w-3xl max-h-[90vh]">
-        <DialogHeader className="popout-header-accent">
-          <DialogTitle>Create Quotation</DialogTitle>
-          <DialogDescription>
-            Fill in the quotation details
+      <DialogContent className="sm:max-w-3xl max-h-[90vh] bg-popover border-border">
+        <DialogHeader className="border-b border-primary pb-4">
+          <DialogTitle className="text-foreground">Create New Quotation</DialogTitle>
+          <DialogDescription className="text-muted-foreground">
+            Fill in the quotation details for your client
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="max-h-[calc(90vh-8rem)] pr-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="client">Client *</Label>
-              <Select value={clientId} onValueChange={setClientId} disabled={createQuotation.isPending}>
-                <SelectTrigger id="client" className="focus-visible:ring-primary">
-                  <SelectValue placeholder="Select a client" />
-                </SelectTrigger>
-                <SelectContent>
-                  {clients.map((client) => (
-                    <SelectItem key={client.id.toString()} value={client.id.toString()}>
-                      {client.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        <ScrollArea className="max-h-[calc(90vh-180px)] pr-4">
+          <form onSubmit={handleSubmit} className="space-y-5 pt-2">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="client" className="text-foreground">
+                  Client *
+                </Label>
+                <Select value={clientId} onValueChange={setClientId} required disabled={createQuotation.isPending}>
+                  <SelectTrigger id="client" className="bg-background border-border focus:ring-primary">
+                    <SelectValue placeholder="Select client" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover border-border">
+                    {clients.map((client) => (
+                      <SelectItem key={client.id.toString()} value={client.id.toString()}>
+                        {client.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="productSelect" className="text-foreground">
+                  Select Product (Optional)
+                </Label>
+                <Select value={selectedProductId} onValueChange={handleProductSelect} disabled={createQuotation.isPending}>
+                  <SelectTrigger id="productSelect" className="bg-background border-border focus:ring-primary">
+                    <SelectValue placeholder="Choose from inventory" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover border-border">
+                    {products.map((prod) => (
+                      <SelectItem key={prod.id.toString()} value={prod.id.toString()}>
+                        {prod.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="product">Select Product (Optional)</Label>
-              <Select value={productId} onValueChange={handleProductSelect} disabled={createQuotation.isPending}>
-                <SelectTrigger id="product" className="focus-visible:ring-primary">
-                  <SelectValue placeholder="Select a product to auto-fill" />
-                </SelectTrigger>
-                <SelectContent>
-                  {products.map((product) => (
-                    <SelectItem key={product.id.toString()} value={product.id.toString()}>
-                      {product.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="productName">Product Name *</Label>
+              <Label htmlFor="product" className="text-foreground">
+                Product Name *
+              </Label>
               <Input
-                id="productName"
-                value={productName}
-                onChange={(e) => setProductName(e.target.value)}
+                id="product"
+                placeholder="e.g., Business Card, Brochure"
+                value={product}
+                onChange={(e) => setProduct(e.target.value)}
+                required
                 disabled={createQuotation.isPending}
-                className="focus-visible:ring-primary"
+                className="bg-background border-border focus-visible:ring-primary"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="productType">Product Type</Label>
+                <Label htmlFor="productType" className="text-foreground">
+                  Product Type *
+                </Label>
                 <Input
                   id="productType"
+                  placeholder="e.g., Card, Booklet"
                   value={productType}
                   onChange={(e) => setProductType(e.target.value)}
+                  required
                   disabled={createQuotation.isPending}
-                  className="focus-visible:ring-primary"
+                  className="bg-background border-border focus-visible:ring-primary"
                 />
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="size">Size</Label>
+                <Label htmlFor="size" className="text-foreground">
+                  Size *
+                </Label>
                 <Input
                   id="size"
+                  placeholder="e.g., A4, 3.5x2"
                   value={size}
                   onChange={(e) => setSize(e.target.value)}
+                  required
                   disabled={createQuotation.isPending}
-                  className="focus-visible:ring-primary"
+                  className="bg-background border-border focus-visible:ring-primary"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="printingSide">Printing Side</Label>
+                <Label htmlFor="printingSide" className="text-foreground">
+                  Printing Side *
+                </Label>
                 <Input
                   id="printingSide"
+                  placeholder="e.g., Single, Double"
                   value={printingSide}
                   onChange={(e) => setPrintingSide(e.target.value)}
+                  required
                   disabled={createQuotation.isPending}
-                  className="focus-visible:ring-primary"
+                  className="bg-background border-border focus-visible:ring-primary"
                 />
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="lamination">Lamination</Label>
+                <Label htmlFor="lamination" className="text-foreground">
+                  Lamination *
+                </Label>
                 <Input
                   id="lamination"
+                  placeholder="e.g., Matte, Glossy"
                   value={lamination}
                   onChange={(e) => setLamination(e.target.value)}
+                  required
                   disabled={createQuotation.isPending}
-                  className="focus-visible:ring-primary"
+                  className="bg-background border-border focus-visible:ring-primary"
                 />
               </div>
             </div>
@@ -230,153 +247,194 @@ export default function QuotationFormDialog({ open, onOpenChange }: QuotationFor
                   checked={spotUV}
                   onCheckedChange={(checked) => setSpotUV(checked as boolean)}
                   disabled={createQuotation.isPending}
-                  className="focus-visible:ring-primary"
+                  className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                 />
-                <Label htmlFor="spotUV" className="cursor-pointer">Spot UV</Label>
+                <Label htmlFor="spotUV" className="cursor-pointer text-foreground">
+                  Spot UV
+                </Label>
               </div>
+
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="foiling"
                   checked={foiling}
                   onCheckedChange={(checked) => setFoiling(checked as boolean)}
                   disabled={createQuotation.isPending}
-                  className="focus-visible:ring-primary"
+                  className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                 />
-                <Label htmlFor="foiling" className="cursor-pointer">Foiling</Label>
+                <Label htmlFor="foiling" className="cursor-pointer text-foreground">
+                  Foiling
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="pageNumbering"
+                  checked={pageNumbering}
+                  onCheckedChange={(checked) => setPageNumbering(checked as boolean)}
+                  disabled={createQuotation.isPending}
+                  className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                />
+                <Label htmlFor="pageNumbering" className="cursor-pointer text-foreground">
+                  Page Numbering
+                </Label>
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="pages">Pages</Label>
+                <Label htmlFor="pages" className="text-foreground">
+                  Pages *
+                </Label>
                 <Input
                   id="pages"
                   type="number"
+                  placeholder="0"
                   value={pages}
                   onChange={(e) => setPages(e.target.value)}
+                  required
                   disabled={createQuotation.isPending}
-                  className="focus-visible:ring-primary"
+                  className="bg-background border-border focus-visible:ring-primary"
                 />
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="paperType">Paper Type</Label>
+                <Label htmlFor="paperType" className="text-foreground">
+                  Paper Type *
+                </Label>
                 <Input
                   id="paperType"
+                  placeholder="e.g., Art Paper"
                   value={paperType}
                   onChange={(e) => setPaperType(e.target.value)}
+                  required
                   disabled={createQuotation.isPending}
-                  className="focus-visible:ring-primary"
+                  className="bg-background border-border focus-visible:ring-primary"
                 />
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="paperGSM">Paper GSM</Label>
+                <Label htmlFor="paperGSM" className="text-foreground">
+                  Paper GSM *
+                </Label>
                 <Input
                   id="paperGSM"
+                  placeholder="e.g., 300"
                   value={paperGSM}
                   onChange={(e) => setPaperGSM(e.target.value)}
+                  required
                   disabled={createQuotation.isPending}
-                  className="focus-visible:ring-primary"
+                  className="bg-background border-border focus-visible:ring-primary"
                 />
               </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="pageNumbering"
-                checked={pageNumbering}
-                onCheckedChange={(checked) => setPageNumbering(checked as boolean)}
-                disabled={createQuotation.isPending}
-                className="focus-visible:ring-primary"
-              />
-              <Label htmlFor="pageNumbering" className="cursor-pointer">Page Numbering</Label>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="laminationType">Lamination Type</Label>
+                <Label htmlFor="laminationType" className="text-foreground">
+                  Lamination Type *
+                </Label>
                 <Input
                   id="laminationType"
+                  placeholder="e.g., Matte, Glossy"
                   value={laminationType}
                   onChange={(e) => setLaminationType(e.target.value)}
+                  required
                   disabled={createQuotation.isPending}
-                  className="focus-visible:ring-primary"
+                  className="bg-background border-border focus-visible:ring-primary"
                 />
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="bindingType">Binding Type</Label>
+                <Label htmlFor="bindingType" className="text-foreground">
+                  Binding Type *
+                </Label>
                 <Input
                   id="bindingType"
+                  placeholder="e.g., Perfect, Spiral"
                   value={bindingType}
                   onChange={(e) => setBindingType(e.target.value)}
+                  required
                   disabled={createQuotation.isPending}
-                  className="focus-visible:ring-primary"
+                  className="bg-background border-border focus-visible:ring-primary"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="quantity">Quantity *</Label>
+                <Label htmlFor="quantity" className="text-foreground">
+                  Quantity *
+                </Label>
                 <Input
                   id="quantity"
                   type="number"
+                  placeholder="100"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
+                  required
                   disabled={createQuotation.isPending}
-                  className="focus-visible:ring-primary"
+                  className="bg-background border-border focus-visible:ring-primary"
                 />
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="price">Price *</Label>
+                <Label htmlFor="price" className="text-foreground">
+                  Price per Item *
+                </Label>
                 <Input
                   id="price"
                   type="number"
                   step="0.01"
+                  placeholder="0.00"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
+                  required
                   disabled={createQuotation.isPending}
-                  className="focus-visible:ring-primary"
+                  className="bg-background border-border focus-visible:ring-primary"
                 />
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="pricePerUnit">Price per Unit *</Label>
+                <Label htmlFor="pricePerUnit" className="text-foreground">
+                  Price per Unit *
+                </Label>
                 <Input
                   id="pricePerUnit"
                   type="number"
                   step="0.01"
+                  placeholder="0.00"
                   value={pricePerUnit}
                   onChange={(e) => setPricePerUnit(e.target.value)}
+                  required
                   disabled={createQuotation.isPending}
-                  className="focus-visible:ring-primary"
+                  className="bg-background border-border focus-visible:ring-primary"
                 />
               </div>
             </div>
 
-            <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
+            <div className="bg-accent border border-primary rounded-lg p-4">
               <div className="flex justify-between items-center">
-                <span className="font-semibold">Total Price:</span>
-                <span className="text-2xl font-bold text-primary">${totalPrice}</span>
+                <span className="text-sm font-semibold text-foreground">Total Price:</span>
+                <span className="text-2xl font-bold text-primary">₹{totalPrice}</span>
               </div>
             </div>
 
-            {error && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-
-            <div className="flex gap-2 pt-4">
+            <div className="flex gap-3 pt-2">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={createQuotation.isPending}
-                className="flex-1 btn-interactive"
+                className="flex-1 bg-secondary text-secondary-foreground border-border"
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={createQuotation.isPending} className="flex-1 btn-interactive">
+              <Button
+                type="submit"
+                disabled={createQuotation.isPending}
+                className="flex-1 bg-primary text-primary-foreground"
+              >
                 {createQuotation.isPending ? 'Creating...' : 'Create Quotation'}
               </Button>
             </div>

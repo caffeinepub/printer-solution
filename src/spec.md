@@ -1,13 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Remove the profile setup flow and apply a cohesive visual refresh across the app UI.
+**Goal:** Enable the currently disabled “Add” tab/entry point in dialog-driven workflows and make all popout dialogs/forms fully opaque (no transparency) across the UI.
 
 **Planned changes:**
-- Remove/disable any “Set up your profile” modal/dialog and related UI so authenticated users go straight into the main AppShell.
-- Ensure the app remains fully usable when `getCallerUserProfile` returns `null`, including a non-broken header/profile area and functioning tabs/pages.
-- Refresh and standardize UI styling across LoginPage, AppShell header, tab navigation, page surfaces, and dialogs (consistent colors, typography, spacing, and component styling).
-- Update dialogs/popups to use solid, readable surfaces (non-transparent) with good contrast in both light and dark mode.
-- Ensure all user-facing text affected/introduced by these changes is in English.
+- Find every dialog/dialog-driven workflow where an “Add” tab/trigger exists and ensure it is enabled and selectable.
+- Ensure selecting the “Add” tab/trigger reliably reveals the add/create form content without hidden/blocked states or console errors.
+- Remove translucent styling from all dialog surfaces, popout forms, and nested popovers used within dialogs by using fully opaque background/theme classes (in light and dark modes), avoiding opacity modifiers and backdrop-blur effects, without modifying shared UI component files.
 
-**User-visible outcome:** After logging in, users land directly in the main app without any profile setup prompt; the interface looks consistently refreshed across major screens/components, and the app works normally even if no user profile exists.
+**User-visible outcome:** Users can click the “Add” tab anywhere it appears in dialogs to open the add/create form, and all dialog/popout surfaces (including dropdowns inside dialogs) appear with solid, readable, non-transparent backgrounds.

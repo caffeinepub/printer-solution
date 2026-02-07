@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T11:13:01.423Z",
+  "generatedAt": "2026-02-07T12:14:09.752Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -12,40 +12,40 @@
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Remove the profile setup flow so authenticated users are never prompted to complete a \"Set up your profile\" dialog, and the app remains usable even when the caller has no saved profile.",
+        "summary": "Enable the disabled “Add” tab/entry point wherever it appears in dialogs and dialog-driven workflows (e.g., any Tabs trigger/segment/button labeled “Add” that is currently disabled), so users can open the add/create form without being blocked.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/AppShell.tsx",
-          "frontend/src/components/ProfileSetupDialog.tsx"
+          "frontend/src/components/clients/ClientDetailDialog.tsx",
+          "frontend/src/components/clients/ClientFormDialog.tsx",
+          "frontend/src/components/inventory/ProductFormDialog.tsx",
+          "frontend/src/components/quotations/QuotationFormDialog.tsx",
+          "frontend/src/components/quotations/QuotationDetailDialog.tsx",
+          "frontend/src/components/company/CompanySettingsDialog.tsx",
+          "frontend/src/components/UserManagementDialog.tsx",
+          "frontend/src/components/billing/InvoicePrintPreviewDialog.tsx",
+          "frontend/src/components/quotations/QuotationPrintPreviewDialog.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/AppShell.tsx",
-          "frontend/src/components/ProfileSetupDialog.tsx"
+          "frontend/src/components/UserManagementDialog.tsx"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Update/change the user interface with a cohesive, consistent visual refresh across the login screen, header, tab navigation, page surfaces, and dialogs (colors, typography, spacing, and component styling). Use English for all user-facing text.",
+        "summary": "Remove transparency from all popout dialog boxes and forms by ensuring dialog surfaces, popovers, and form containers use fully opaque theme colors (no Tailwind opacity modifiers like /10, /20, /50 and no translucent/backdrop-blur styling on dialog content). Apply this consistently across all dialogs (e.g., client/product/quotation/company/user management/confirm/print preview dialogs) and any nested popovers used inside dialogs (e.g., select dropdown content).",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/index.css",
-          "frontend/tailwind.config.js",
-          "frontend/src/pages/LoginPage.tsx",
-          "frontend/src/components/AppShell.tsx",
-          "frontend/src/components/company/CompanySettingsDialog.tsx",
           "frontend/src/components/UserManagementDialog.tsx",
-          "frontend/src/components/dialogs/ConfirmDialog.tsx"
+          "frontend/src/components/quotations/QuotationFormDialog.tsx",
+          "frontend/src/components/clients/ClientFormDialog.tsx",
+          "frontend/src/components/inventory/ProductFormDialog.tsx",
+          "frontend/src/components/clients/ClientDetailDialog.tsx",
+          "frontend/src/components/dialogs/ConfirmDialog.tsx",
+          "frontend/src/components/company/CompanySettingsDialog.tsx"
         ],
         "matchedFiles": [
           "frontend/src/index.css",
-          "frontend/tailwind.config.js",
-          "frontend/src/pages/LoginPage.tsx",
-          "frontend/src/components/AppShell.tsx",
-          "frontend/src/components/company/CompanySettingsDialog.tsx",
-          "frontend/src/components/UserManagementDialog.tsx",
-          "frontend/src/components/dialogs/ConfirmDialog.tsx"
+          "frontend/src/components/UserManagementDialog.tsx"
         ]
       }
     ]
@@ -55,15 +55,8 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
-    "frontend/src/components/AppShell.tsx",
-    "frontend/src/components/ProfileSetupDialog.tsx",
     "frontend/src/components/UserManagementDialog.tsx",
-    "frontend/src/components/company/CompanySettingsDialog.tsx",
-    "frontend/src/components/dialogs/ConfirmDialog.tsx",
     "frontend/src/index.css",
-    "frontend/src/pages/LoginPage.tsx",
-    "frontend/tailwind.config.js",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

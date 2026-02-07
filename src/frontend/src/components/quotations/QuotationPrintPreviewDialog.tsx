@@ -34,7 +34,7 @@ export default function QuotationPrintPreviewDialog({
   if (!client) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="popout-surface dialog-animate max-w-4xl max-h-[90vh]">
+        <DialogContent className="popout-surface max-w-4xl max-h-[90vh]">
           <DialogHeader className="popout-header-accent">
             <DialogTitle>Print Preview - Quotation</DialogTitle>
             <DialogDescription>Client not found</DialogDescription>
@@ -49,7 +49,7 @@ export default function QuotationPrintPreviewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="popout-surface dialog-animate max-w-4xl max-h-[90vh]">
+      <DialogContent className="popout-surface max-w-4xl max-h-[90vh]">
         <DialogHeader className="popout-header-accent">
           <DialogTitle>Print Preview - Quotation</DialogTitle>
           <DialogDescription>

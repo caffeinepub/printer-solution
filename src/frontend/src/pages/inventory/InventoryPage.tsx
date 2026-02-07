@@ -12,7 +12,7 @@ export default function InventoryPage() {
   const { data: products = [], isLoading } = useGetAllProducts();
   const deleteProduct = useDeleteProduct();
   const [showForm, setShowForm] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | undefined>(undefined);
   const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
 
   const handleEdit = (product: Product) => {
@@ -21,7 +21,7 @@ export default function InventoryPage() {
   };
 
   const handleAdd = () => {
-    setEditingProduct(null);
+    setEditingProduct(undefined);
     setShowForm(true);
   };
 
@@ -130,7 +130,6 @@ export default function InventoryPage() {
         title="Delete Product"
         description={`Are you sure you want to delete ${deletingProduct?.name}? This action cannot be undone.`}
         confirmText="Delete"
-        isLoading={deleteProduct.isPending}
       />
     </>
   );

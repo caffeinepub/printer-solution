@@ -24,71 +24,70 @@ interface UserManagementDialogProps {
 export default function UserManagementDialog({ open, onOpenChange }: UserManagementDialogProps) {
   const [principalId, setPrincipalId] = useState('');
   const [role, setRole] = useState<UserRole>(UserRole.user);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   const assignRole = useAssignUserRole();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    if (!principalId.trim()) {
-      setError('Please enter a Principal ID');
-      return;
-    }
+    setError(null);
+    setSuccess(false);
 
     try {
-      const principal = Principal.fromText(principalId.trim());
+      const principal = Principal.fromText(principalId);
       await assignRole.mutateAsync({ principal, role });
-      setSuccess(`Successfully assigned ${role} role`);
+      setSuccess(true);
       setPrincipalId('');
       setRole(UserRole.user);
+      setTimeout(() => setSuccess(false), 3000);
     } catch (err: any) {
-      setError(err.message || 'Failed to assign role. Please check the Principal ID and try again.');
+      setError(err.message || 'Failed to assign role');
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="dialog-surface sm:max-w-md">
-        <DialogHeader className="dialog-header">
-          <DialogTitle>User Management</DialogTitle>
-          <DialogDescription>
-            Add users by their Internet Identity Principal ID
+      <DialogContent className="sm:max-w-md bg-popover border-border">
+        <DialogHeader className="border-b border-primary pb-4">
+          <DialogTitle className="text-foreground">User Management</DialogTitle>
+          <DialogDescription className="text-muted-foreground">
+            Assign roles to users by their Principal ID
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-5 pt-2">
           <div className="space-y-2">
-            <Label htmlFor="principal">Principal ID *</Label>
+            <Label htmlFor="principalId" className="text-foreground">
+              Principal ID *
+            </Label>
             <Input
-              id="principal"
-              placeholder="Enter Principal ID"
+              id="principalId"
+              placeholder="Enter user's Principal ID"
               value={principalId}
               onChange={(e) => setPrincipalId(e.target.value)}
+              required
               disabled={assignRole.isPending}
-              className="input-focus font-mono text-sm"
+              className="bg-background border-border focus-visible:ring-primary"
             />
-            <p className="text-xs text-muted-foreground">
-              The user's Internet Identity Principal ID
-            </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="role">Role *</Label>
-            <Select value={role} onValueChange={(value) => setRole(value as UserRole)} disabled={assignRole.isPending}>
-              <SelectTrigger id="role" className="input-focus">
+            <Label htmlFor="role" className="text-foreground">
+              Role *
+            </Label>
+            <Select
+              value={role}
+              onValueChange={(value) => setRole(value as UserRole)}
+              disabled={assignRole.isPending}
+            >
+              <SelectTrigger id="role" className="bg-background border-border focus:ring-primary">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={UserRole.admin}>Admin</SelectItem>
+              <SelectContent className="bg-popover border-border">
+                <SelectItem value={UserRole.admin}>Administrator</SelectItem>
                 <SelectItem value={UserRole.user}>User</SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-xs text-muted-foreground">
-              Admins can manage users and approve quotations
-            </p>
           </div>
 
           {error && (
@@ -99,9 +98,11 @@ export default function UserManagementDialog({ open, onOpenChange }: UserManagem
           )}
 
           {success && (
-            <Alert className="border-success/50 bg-success/10">
+            <Alert className="border-success bg-success/10">
               <CheckCircle2 className="h-4 w-4 text-success" />
-              <AlertDescription className="text-success-foreground">{success}</AlertDescription>
+              <AlertDescription className="text-success-foreground">
+                Role assigned successfully!
+              </AlertDescription>
             </Alert>
           )}
 
@@ -111,12 +112,16 @@ export default function UserManagementDialog({ open, onOpenChange }: UserManagem
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={assignRole.isPending}
-              className="flex-1 btn-interactive"
+              className="flex-1 bg-secondary text-secondary-foreground border-border"
             >
               Close
             </Button>
-            <Button type="submit" disabled={assignRole.isPending} className="flex-1 btn-interactive">
-              {assignRole.isPending ? 'Adding...' : 'Add User'}
+            <Button
+              type="submit"
+              disabled={assignRole.isPending}
+              className="flex-1 bg-primary text-primary-foreground"
+            >
+              {assignRole.isPending ? 'Assigning...' : 'Assign Role'}
             </Button>
           </div>
         </form>
