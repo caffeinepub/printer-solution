@@ -1,2 +1,3 @@
-# printer-solution
-Exported from Caffeine project: Skip post-login user option and go directly to dashboard
+## 
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

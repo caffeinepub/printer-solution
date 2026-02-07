@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Red and black theme with OKLCH */
+    --background: oklch(98% 0.005 0);
+    --foreground: oklch(15% 0.01 0);
+
+    --card: oklch(100% 0 0);
+    --card-foreground: oklch(15% 0.01 0);
+
+    --popover: oklch(100% 0 0);
+    --popover-foreground: oklch(15% 0.01 0);
+
+    --primary: oklch(50% 0.22 25);
+    --primary-foreground: oklch(98% 0.005 0);
+
+    --secondary: oklch(92% 0.01 0);
+    --secondary-foreground: oklch(15% 0.01 0);
+
+    --muted: oklch(94% 0.005 0);
+    --muted-foreground: oklch(50% 0.01 0);
+
+    --accent: oklch(92% 0.01 0);
+    --accent-foreground: oklch(15% 0.01 0);
+
+    --destructive: oklch(55% 0.24 25);
+    --destructive-foreground: oklch(98% 0.005 0);
+
+    --success: oklch(60% 0.15 145);
+    --success-foreground: oklch(98% 0.005 0);
+
+    --warning: oklch(70% 0.15 80);
+    --warning-foreground: oklch(15% 0.01 0);
+
+    --border: oklch(88% 0.005 0);
+    --input: oklch(88% 0.005 0);
+    --ring: oklch(50% 0.22 25);
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: oklch(12% 0.01 0);
+    --foreground: oklch(95% 0.005 0);
+
+    --card: oklch(15% 0.01 0);
+    --card-foreground: oklch(95% 0.005 0);
+
+    --popover: oklch(15% 0.01 0);
+    --popover-foreground: oklch(95% 0.005 0);
+
+    --primary: oklch(55% 0.22 25);
+    --primary-foreground: oklch(98% 0.005 0);
+
+    --secondary: oklch(20% 0.01 0);
+    --secondary-foreground: oklch(95% 0.005 0);
+
+    --muted: oklch(20% 0.01 0);
+    --muted-foreground: oklch(60% 0.01 0);
+
+    --accent: oklch(20% 0.01 0);
+    --accent-foreground: oklch(95% 0.005 0);
+
+    --destructive: oklch(55% 0.24 25);
+    --destructive-foreground: oklch(98% 0.005 0);
+
+    --success: oklch(60% 0.15 145);
+    --success-foreground: oklch(98% 0.005 0);
+
+    --warning: oklch(70% 0.15 80);
+    --warning-foreground: oklch(15% 0.01 0);
+
+    --border: oklch(25% 0.01 0);
+    --input: oklch(25% 0.01 0);
+    --ring: oklch(55% 0.22 25);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Print styles for A4 documents */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Hide everything except print containers */
+  body > *:not(.invoice-print-container):not(.quotation-print-container):not(.ledger-print-container) {
+    display: none !important;
+  }
+
+  .invoice-print-container,
+  .quotation-print-container,
+  .ledger-print-container {
+    display: block !important;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 20mm;
+    margin: 0;
+    background: white;
+    color: black;
+    page-break-after: always;
+  }
+
+  /* Ensure proper text rendering */
+  .invoice-print-container *,
+  .quotation-print-container *,
+  .ledger-print-container * {
+    color: black !important;
+    background: transparent !important;
+  }
+
+  /* Preserve table borders */
+  .invoice-print-container table,
+  .quotation-print-container table,
+  .ledger-print-container table {
+    border-collapse: collapse;
+  }
+
+  .invoice-print-container td,
+  .invoice-print-container th,
+  .quotation-print-container td,
+  .quotation-print-container th,
+  .ledger-print-container td,
+  .ledger-print-container th {
+    border: 1px solid #000 !important;
+  }
+
+  /* Preserve background colors for headers */
+  .invoice-print-container .bg-gray-100,
+  .quotation-print-container .bg-gray-100,
+  .ledger-print-container .bg-gray-100 {
+    background: #f3f4f6 !important;
+  }
+
+  .invoice-print-container .bg-gray-50,
+  .quotation-print-container .bg-gray-50,
+  .ledger-print-container .bg-gray-50 {
+    background: #f9fafb !important;
+  }
+}

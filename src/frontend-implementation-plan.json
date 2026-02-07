@@ -1,0 +1,53 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Directly render dashboard after Internet Identity login",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Remove any post-login user option/selection step and transition directly from successful Internet Identity login to the main dashboard (AppShell).",
+      "acceptanceCriteria": [
+        "After a successful Internet Identity login, the first screen shown is the main dashboard (AppShell).",
+        "No intermediate screen/dialog that asks the user to pick a 'user option' is shown after login.",
+        "The dashboard loads with its normal default tab selection (current default is the Clients tab)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Ensure authenticated rendering flows directly to AppShell without any intermediate post-login selection state; keep AppShell mounted immediately after identity is available. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/LoginPage.tsx",
+          "operation": "modify",
+          "description": "Remove the demo username/password gating so Internet Identity login is the only action needed to enter the app; present a single Internet Identity login button and rely on App.tsx to render AppShell immediately after successful login. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/AppShell.tsx",
+          "operation": "modify",
+          "description": "Confirm the default active tab remains 'clients' on initial render so the dashboard opens to the Clients tab after login; avoid introducing any new post-login selection UI. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Show first-time profile setup as a modal overlay on top of the dashboard without blocking entry into the dashboard shell after login.",
+      "acceptanceCriteria": [
+        "When the caller has no saved profile, the dashboard (AppShell) is still rendered immediately after login.",
+        "If a profile setup prompt is required, it appears as an overlay/modal on top of the dashboard rather than replacing it with a separate step/page."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Keep AppShell rendered immediately after authentication and conditionally mount ProfileSetupDialog as an overlay when getCallerUserProfile returns null (per the authorization component guidance to prevent modal flash). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/ProfileSetupDialog.tsx",
+          "operation": "modify",
+          "description": "Ensure the profile setup UI remains an overlay/modal (not a separate page) and closes automatically after saving by relying on the currentUserProfile query invalidation (so App.tsx unmounts the dialog once the profile exists). Verify the component's usage instructions before implementing."
+        }
+      ]
+    }
+  ]
+}

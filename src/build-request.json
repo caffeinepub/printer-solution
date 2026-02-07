@@ -1,0 +1,53 @@
+{
+  "kind": "build_request",
+  "title": "Skip post-login user option and go directly to dashboard",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Remove any post-login user-option/selection step so that immediately after a successful Internet Identity login the app renders the main dashboard (AppShell) without requiring the user to choose an option.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "do not use user option after login get directoly to dashboard"
+        ]
+      },
+      "acceptanceCriteria": [
+        "After a successful Internet Identity login, the first screen shown is the main dashboard (AppShell).",
+        "No intermediate screen/dialog that asks the user to pick a 'user option' is shown after login.",
+        "The dashboard loads with its normal default tab selection (current default is the Clients tab)."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Ensure that first-time profile setup (when the caller profile is missing) does not block entry into the dashboard; it may appear as a modal on top of the dashboard, but the user must still be taken directly to the dashboard shell after login.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "do not use user option after login get directoly to dashboard"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When the caller has no saved profile, the dashboard (AppShell) is still rendered immediately after login.",
+        "If a profile setup prompt is required, it appears as an overlay/modal on top of the dashboard rather than replacing it with a separate step/page."
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not edit any files under frontend/src/hooks/useInternetIdentity.ts or frontend/src/hooks/useActor.ts (immutable paths)."
+  ],
+  "nonGoals": [
+    "Changing authentication provider (must continue using Internet Identity).",
+    "Adding new onboarding flows beyond removing the post-login option/selection step."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}
