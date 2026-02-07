@@ -4,78 +4,78 @@
 
 @layer base {
   :root {
-    /* Red and black theme with OKLCH */
-    --background: oklch(98% 0.005 0);
-    --foreground: oklch(15% 0.01 0);
+    /* Refined orange and neutral theme with OKLCH */
+    --background: oklch(98% 0.003 60);
+    --foreground: oklch(18% 0.01 60);
 
     --card: oklch(100% 0 0);
-    --card-foreground: oklch(15% 0.01 0);
+    --card-foreground: oklch(18% 0.01 60);
 
     --popover: oklch(100% 0 0);
-    --popover-foreground: oklch(15% 0.01 0);
+    --popover-foreground: oklch(18% 0.01 60);
 
-    --primary: oklch(50% 0.22 25);
-    --primary-foreground: oklch(98% 0.005 0);
+    --primary: oklch(62% 0.19 40);
+    --primary-foreground: oklch(100% 0 0);
 
-    --secondary: oklch(92% 0.01 0);
-    --secondary-foreground: oklch(15% 0.01 0);
+    --secondary: oklch(94% 0.01 60);
+    --secondary-foreground: oklch(18% 0.01 60);
 
-    --muted: oklch(94% 0.005 0);
-    --muted-foreground: oklch(50% 0.01 0);
+    --muted: oklch(95% 0.005 60);
+    --muted-foreground: oklch(48% 0.01 60);
 
-    --accent: oklch(92% 0.01 0);
-    --accent-foreground: oklch(15% 0.01 0);
+    --accent: oklch(96% 0.01 60);
+    --accent-foreground: oklch(18% 0.01 60);
 
-    --destructive: oklch(55% 0.24 25);
-    --destructive-foreground: oklch(98% 0.005 0);
+    --destructive: oklch(55% 0.22 25);
+    --destructive-foreground: oklch(100% 0 0);
 
-    --success: oklch(60% 0.15 145);
-    --success-foreground: oklch(98% 0.005 0);
+    --success: oklch(58% 0.14 145);
+    --success-foreground: oklch(100% 0 0);
 
-    --warning: oklch(70% 0.15 80);
-    --warning-foreground: oklch(15% 0.01 0);
+    --warning: oklch(68% 0.15 75);
+    --warning-foreground: oklch(18% 0.01 60);
 
-    --border: oklch(88% 0.005 0);
-    --input: oklch(88% 0.005 0);
-    --ring: oklch(50% 0.22 25);
+    --border: oklch(90% 0.005 60);
+    --input: oklch(90% 0.005 60);
+    --ring: oklch(62% 0.19 40);
 
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: oklch(12% 0.01 0);
-    --foreground: oklch(95% 0.005 0);
+    --background: oklch(14% 0.01 60);
+    --foreground: oklch(96% 0.003 60);
 
-    --card: oklch(15% 0.01 0);
-    --card-foreground: oklch(95% 0.005 0);
+    --card: oklch(16% 0.01 60);
+    --card-foreground: oklch(96% 0.003 60);
 
-    --popover: oklch(15% 0.01 0);
-    --popover-foreground: oklch(95% 0.005 0);
+    --popover: oklch(16% 0.01 60);
+    --popover-foreground: oklch(96% 0.003 60);
 
-    --primary: oklch(55% 0.22 25);
-    --primary-foreground: oklch(98% 0.005 0);
+    --primary: oklch(68% 0.19 40);
+    --primary-foreground: oklch(100% 0 0);
 
-    --secondary: oklch(20% 0.01 0);
-    --secondary-foreground: oklch(95% 0.005 0);
+    --secondary: oklch(22% 0.01 60);
+    --secondary-foreground: oklch(96% 0.003 60);
 
-    --muted: oklch(20% 0.01 0);
-    --muted-foreground: oklch(60% 0.01 0);
+    --muted: oklch(22% 0.01 60);
+    --muted-foreground: oklch(62% 0.01 60);
 
-    --accent: oklch(20% 0.01 0);
-    --accent-foreground: oklch(95% 0.005 0);
+    --accent: oklch(22% 0.01 60);
+    --accent-foreground: oklch(96% 0.003 60);
 
-    --destructive: oklch(55% 0.24 25);
-    --destructive-foreground: oklch(98% 0.005 0);
+    --destructive: oklch(55% 0.22 25);
+    --destructive-foreground: oklch(100% 0 0);
 
-    --success: oklch(60% 0.15 145);
-    --success-foreground: oklch(98% 0.005 0);
+    --success: oklch(58% 0.14 145);
+    --success-foreground: oklch(100% 0 0);
 
-    --warning: oklch(70% 0.15 80);
-    --warning-foreground: oklch(15% 0.01 0);
+    --warning: oklch(68% 0.15 75);
+    --warning-foreground: oklch(18% 0.01 60);
 
-    --border: oklch(25% 0.01 0);
-    --input: oklch(25% 0.01 0);
-    --ring: oklch(55% 0.22 25);
+    --border: oklch(26% 0.01 60);
+    --input: oklch(26% 0.01 60);
+    --ring: oklch(68% 0.19 40);
   }
 }
 
@@ -85,6 +85,74 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Dashboard Tab Styling - Clean surface with vibrant active state */
+  .dashboard-tabs-list {
+    @apply bg-card border border-border shadow-sm rounded-xl p-1.5;
+  }
+
+  .dashboard-tab-trigger {
+    @apply relative rounded-lg px-4 py-2.5;
+    @apply transition-colors duration-200;
+    @apply hover:bg-primary/10;
+    @apply data-[state=active]:bg-primary/20;
+    @apply data-[state=active]:text-primary;
+    @apply data-[state=active]:font-semibold;
+    @apply data-[state=active]:shadow-sm;
+    @apply focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
+  }
+
+  .dashboard-tab-trigger[data-state="active"]::after {
+    content: '';
+    @apply absolute bottom-0 left-2 right-2 h-1 bg-primary rounded-full;
+  }
+
+  /* Dialog Surface Styling - Solid, readable surfaces in both modes */
+  .dialog-surface {
+    @apply bg-card text-card-foreground border-border;
+  }
+
+  .dialog-header {
+    @apply border-b border-border/60 pb-4 mb-2;
+  }
+
+  /* Input Focus Styling */
+  .input-focus {
+    @apply focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1;
+  }
+
+  /* Page Surface - Consistent background for all main content areas */
+  .page-surface {
+    @apply bg-card border border-border rounded-xl shadow-sm;
+  }
+
+  /* Interaction utilities */
+  .btn-interactive {
+    @apply transition-all duration-200;
+    @apply focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
+    @apply hover:shadow-md;
+  }
+
+  .row-interactive {
+    @apply cursor-pointer transition-colors duration-150;
+    @apply hover:bg-primary/10;
+  }
+
+  .card-interactive {
+    @apply transition-shadow duration-200;
+    @apply hover:shadow-md;
+  }
+
+  /* Section styling for dialogs */
+  .section-title {
+    @apply text-sm font-semibold text-foreground border-l-4 border-primary pl-3 py-1;
+  }
+
+  .content-block {
+    @apply border-l-2 border-primary/30 pl-4 py-2;
   }
 }
 

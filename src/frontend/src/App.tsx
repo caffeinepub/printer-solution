@@ -1,12 +1,9 @@
 import { useInternetIdentity } from './hooks/useInternetIdentity';
-import { useGetCallerUserProfile } from './hooks/useQueries';
 import LoginPage from './pages/LoginPage';
-import ProfileSetupDialog from './components/ProfileSetupDialog';
 import AppShell from './components/AppShell';
 
 export default function App() {
   const { identity, isInitializing } = useInternetIdentity();
-  const { data: userProfile, isLoading: profileLoading, isFetched } = useGetCallerUserProfile();
 
   const isAuthenticated = !!identity;
 
@@ -27,13 +24,6 @@ export default function App() {
     return <LoginPage />;
   }
 
-  // Show profile setup if authenticated but no profile exists
-  const showProfileSetup = isAuthenticated && !profileLoading && isFetched && userProfile === null;
-
-  return (
-    <>
-      <AppShell />
-      {showProfileSetup && <ProfileSetupDialog />}
-    </>
-  );
+  // Render app shell directly after authentication
+  return <AppShell />;
 }

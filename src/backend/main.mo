@@ -5,10 +5,9 @@ import Principal "mo:core/Principal";
 import Order "mo:core/Order";
 import Text "mo:core/Text";
 import Runtime "mo:core/Runtime";
-
-
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
+
 
 // Apply migration using `with` clause
 
@@ -38,6 +37,12 @@ actor {
       address : Text;
       gstin : Text;
       gstRate : Float; // In percentage, e.g., 18.0 for 18%
+      pan : Text; // New field for PAN
+      cin : Text; // New field for CIN
+      addressLine1 : Text;
+      addressLine2 : Text;
+      addressLine3 : Text;
+      placeOfWork : Text; // New field for place of work
       logo : ?CompanyLogo;
     };
 
@@ -455,7 +460,7 @@ actor {
     };
   };
 
-  // Billing Management with GST inclusion
+  // Billing Management with GST and detailed company settings
   public type BillSummary = {
     subtotal : Float;
     gstAmount : Float;

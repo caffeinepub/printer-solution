@@ -1,37 +1,52 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T09:02:38.739Z",
+  "generatedAt": "2026-02-07T11:13:01.423Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
     "total": 2,
-    "implemented": 1,
+    "implemented": 2,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Remove any post-login user-option/selection step so that immediately after a successful Internet Identity login the app renders the main dashboard (AppShell) without requiring the user to choose an option.",
+        "summary": "Remove the profile setup flow so authenticated users are never prompted to complete a \"Set up your profile\" dialog, and the app remains usable even when the caller has no saved profile.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/App.tsx",
-          "frontend/src/pages/LoginPage.tsx",
-          "frontend/src/components/AppShell.tsx"
+          "frontend/src/components/AppShell.tsx",
+          "frontend/src/components/ProfileSetupDialog.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/LoginPage.tsx"
+          "frontend/src/App.tsx",
+          "frontend/src/components/AppShell.tsx",
+          "frontend/src/components/ProfileSetupDialog.tsx"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Ensure that first-time profile setup (when the caller profile is missing) does not block entry into the dashboard; it may appear as a modal on top of the dashboard, but the user must still be taken directly to the dashboard shell after login.",
-        "status": "missing",
+        "summary": "Update/change the user interface with a cohesive, consistent visual refresh across the login screen, header, tab navigation, page surfaces, and dialogs (colors, typography, spacing, and component styling). Use English for all user-facing text.",
+        "status": "implemented",
         "plannedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/ProfileSetupDialog.tsx"
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js",
+          "frontend/src/pages/LoginPage.tsx",
+          "frontend/src/components/AppShell.tsx",
+          "frontend/src/components/company/CompanySettingsDialog.tsx",
+          "frontend/src/components/UserManagementDialog.tsx",
+          "frontend/src/components/dialogs/ConfirmDialog.tsx"
         ],
-        "matchedFiles": []
+        "matchedFiles": [
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js",
+          "frontend/src/pages/LoginPage.tsx",
+          "frontend/src/components/AppShell.tsx",
+          "frontend/src/components/company/CompanySettingsDialog.tsx",
+          "frontend/src/components/UserManagementDialog.tsx",
+          "frontend/src/components/dialogs/ConfirmDialog.tsx"
+        ]
       }
     ]
   },
@@ -40,7 +55,15 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/src/App.tsx",
+    "frontend/src/components/AppShell.tsx",
+    "frontend/src/components/ProfileSetupDialog.tsx",
+    "frontend/src/components/UserManagementDialog.tsx",
+    "frontend/src/components/company/CompanySettingsDialog.tsx",
+    "frontend/src/components/dialogs/ConfirmDialog.tsx",
+    "frontend/src/index.css",
     "frontend/src/pages/LoginPage.tsx",
+    "frontend/tailwind.config.js",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

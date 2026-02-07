@@ -37,7 +37,13 @@ export interface CompanyLogo {
     bytes: Uint8Array;
 }
 export interface CompanySettings {
+    cin: string;
+    pan: string;
     logo?: CompanyLogo;
+    placeOfWork: string;
+    addressLine1: string;
+    addressLine2: string;
+    addressLine3: string;
     gstin: string;
     address: string;
     companyName: string;

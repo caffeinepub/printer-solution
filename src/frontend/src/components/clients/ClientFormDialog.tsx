@@ -78,8 +78,8 @@ export default function ClientFormDialog({ open, onOpenChange, client }: ClientF
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
+      <DialogContent className="popout-surface dialog-animate sm:max-w-md">
+        <DialogHeader className="popout-header-accent">
           <DialogTitle>{isEditing ? 'Edit Client' : 'Add New Client'}</DialogTitle>
           <DialogDescription>
             {isEditing ? 'Update client information' : 'Enter client details'}
@@ -94,6 +94,7 @@ export default function ClientFormDialog({ open, onOpenChange, client }: ClientF
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={mutation.isPending}
+              className="focus-visible:ring-primary"
             />
           </div>
           <div className="space-y-2">
@@ -104,6 +105,7 @@ export default function ClientFormDialog({ open, onOpenChange, client }: ClientF
               value={contactDetails}
               onChange={(e) => setContactDetails(e.target.value)}
               disabled={mutation.isPending}
+              className="focus-visible:ring-primary"
             />
           </div>
           <div className="space-y-2">
@@ -115,6 +117,7 @@ export default function ClientFormDialog({ open, onOpenChange, client }: ClientF
               onChange={(e) => setAddress(e.target.value)}
               disabled={mutation.isPending}
               rows={3}
+              className="focus-visible:ring-primary"
             />
           </div>
 
@@ -131,11 +134,11 @@ export default function ClientFormDialog({ open, onOpenChange, client }: ClientF
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={mutation.isPending}
-              className="flex-1"
+              className="flex-1 btn-interactive"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={mutation.isPending} className="flex-1">
+            <Button type="submit" disabled={mutation.isPending} className="flex-1 btn-interactive">
               {mutation.isPending ? 'Saving...' : isEditing ? 'Update' : 'Add Client'}
             </Button>
           </div>

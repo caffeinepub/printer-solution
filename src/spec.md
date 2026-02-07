@@ -1,11 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** After a successful Internet Identity login, skip any post-login user option/selection step and take the user directly to the main dashboard (AppShell).
+**Goal:** Remove the profile setup flow and apply a cohesive visual refresh across the app UI.
 
 **Planned changes:**
-- Remove/bypass any intermediate post-login user option/selection UI so the app routes/renders directly into AppShell after login.
-- Adjust first-time profile setup behavior so missing-profile prompts appear as a modal/overlay on top of the dashboard instead of blocking entry with a separate step/page.
-- Preserve the dashboard’s normal default tab selection on first render (current default: Clients).
+- Remove/disable any “Set up your profile” modal/dialog and related UI so authenticated users go straight into the main AppShell.
+- Ensure the app remains fully usable when `getCallerUserProfile` returns `null`, including a non-broken header/profile area and functioning tabs/pages.
+- Refresh and standardize UI styling across LoginPage, AppShell header, tab navigation, page surfaces, and dialogs (consistent colors, typography, spacing, and component styling).
+- Update dialogs/popups to use solid, readable surfaces (non-transparent) with good contrast in both light and dark mode.
+- Ensure all user-facing text affected/introduced by these changes is in English.
 
-**User-visible outcome:** Users land on the dashboard immediately after logging in with Internet Identity, without being asked to choose a user option; if profile setup is needed, it appears as a modal over the dashboard.
+**User-visible outcome:** After logging in, users land directly in the main app without any profile setup prompt; the interface looks consistently refreshed across major screens/components, and the app works normally even if no user profile exists.

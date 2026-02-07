@@ -60,17 +60,17 @@ export default function ClientDetailDialog({ open, onOpenChange, client }: Clien
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{client.name}</DialogTitle>
+      <DialogContent className="popout-surface dialog-animate max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="popout-header-accent">
+          <DialogTitle className="text-xl">{client.name}</DialogTitle>
           <DialogDescription>Client details and ledger</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Client Information */}
-          <Card>
+          <Card className="border-primary/10">
             <CardHeader>
-              <CardTitle className="text-lg">Contact Information</CardTitle>
+              <CardTitle className="popout-section-title text-lg">Contact Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div>
@@ -87,11 +87,11 @@ export default function ClientDetailDialog({ open, onOpenChange, client }: Clien
           <Separator />
 
           {/* Ledger */}
-          <Card>
+          <Card className="border-primary/10">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg">Ledger</CardTitle>
+                  <CardTitle className="popout-section-title text-lg">Ledger</CardTitle>
                   <CardDescription>Transaction history</CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
@@ -100,6 +100,7 @@ export default function ClientDetailDialog({ open, onOpenChange, client }: Clien
                     size="sm"
                     onClick={handleExportPDF}
                     disabled={ledgerEntries.length === 0}
+                    className="btn-interactive"
                   >
                     <FileDown className="mr-2 h-4 w-4" />
                     Export to PDF
@@ -109,6 +110,7 @@ export default function ClientDetailDialog({ open, onOpenChange, client }: Clien
                     size="sm"
                     onClick={handleExportCSV}
                     disabled={ledgerEntries.length === 0}
+                    className="btn-interactive"
                   >
                     <FileSpreadsheet className="mr-2 h-4 w-4" />
                     Export to Excel
@@ -147,7 +149,7 @@ export default function ClientDetailDialog({ open, onOpenChange, client }: Clien
                     </TableHeader>
                     <TableBody>
                       {ledgerEntries.map((entry, index) => (
-                        <TableRow key={index}>
+                        <TableRow key={index} className="row-interactive">
                           <TableCell>{entry.description}</TableCell>
                           <TableCell className="text-right">
                             {entry.amount >= 0 ? (

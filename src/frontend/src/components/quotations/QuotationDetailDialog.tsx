@@ -33,9 +33,9 @@ export default function QuotationDetailDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Quotation Details</DialogTitle>
+        <DialogContent className="popout-surface dialog-animate max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader className="popout-header-accent">
+            <DialogTitle className="text-xl">Quotation Details</DialogTitle>
             <DialogDescription>
               Quotation #{quotation.id.toString()} - {client?.name || 'Unknown Client'}
             </DialogDescription>
@@ -44,8 +44,8 @@ export default function QuotationDetailDialog({
           <div className="space-y-6 py-4">
             {/* Client Information */}
             <div>
-              <h3 className="text-sm font-semibold text-foreground mb-3">Client Information</h3>
-              <div className="bg-muted/50 p-4 rounded-lg space-y-2">
+              <h3 className="popout-section-title mb-3">Client Information</h3>
+              <div className="bg-muted/50 p-4 rounded-lg space-y-2 border border-primary/10">
                 <div>
                   <p className="text-xs text-muted-foreground">Name</p>
                   <p className="font-medium">{client?.name || 'Unknown'}</p>
@@ -63,8 +63,8 @@ export default function QuotationDetailDialog({
 
             {/* Product Information */}
             <div>
-              <h3 className="text-sm font-semibold text-foreground mb-3">Product Information</h3>
-              <div className="bg-muted/50 p-4 rounded-lg space-y-2">
+              <h3 className="popout-section-title mb-3">Product Information</h3>
+              <div className="bg-muted/50 p-4 rounded-lg space-y-2 border border-primary/10">
                 <div>
                   <p className="text-xs text-muted-foreground">Product Name</p>
                   <p className="font-medium">{quotation.product}</p>
@@ -108,8 +108,8 @@ export default function QuotationDetailDialog({
 
             {/* Quotation Details */}
             <div>
-              <h3 className="text-sm font-semibold text-foreground mb-3">Quotation Details</h3>
-              <div className="bg-muted/50 p-4 rounded-lg space-y-3">
+              <h3 className="popout-section-title mb-3">Quotation Details</h3>
+              <div className="bg-muted/50 p-4 rounded-lg space-y-3 border border-primary/10">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-xs text-muted-foreground">Pages</p>
@@ -141,8 +141,8 @@ export default function QuotationDetailDialog({
 
             {/* Pricing */}
             <div>
-              <h3 className="text-sm font-semibold text-foreground mb-3">Pricing</h3>
-              <div className="bg-muted/50 p-4 rounded-lg space-y-2">
+              <h3 className="popout-section-title mb-3">Pricing</h3>
+              <div className="bg-muted/50 p-4 rounded-lg space-y-2 border border-primary/10">
                 <div className="flex justify-between">
                   <p className="text-sm text-muted-foreground">Quantity</p>
                   <p className="font-medium">{quotation.quantity.toString()}</p>
@@ -151,17 +151,17 @@ export default function QuotationDetailDialog({
                   <p className="text-sm text-muted-foreground">Price per Unit</p>
                   <p className="font-medium">${quotation.pricePerUnit.toFixed(2)}</p>
                 </div>
-                <div className="flex justify-between pt-2 border-t border-border">
+                <div className="flex justify-between pt-2 border-t border-primary/20">
                   <p className="font-semibold">Total Price</p>
-                  <p className="font-bold text-lg">${quotation.totalPrice.toFixed(2)}</p>
+                  <p className="font-bold text-lg text-primary">${quotation.totalPrice.toFixed(2)}</p>
                 </div>
               </div>
             </div>
 
             {/* Status */}
             <div>
-              <h3 className="text-sm font-semibold text-foreground mb-3">Status</h3>
-              <div className="bg-muted/50 p-4 rounded-lg">
+              <h3 className="popout-section-title mb-3">Status</h3>
+              <div className="bg-muted/50 p-4 rounded-lg border border-primary/10">
                 <div className="flex items-center gap-2">
                   <div
                     className={`h-3 w-3 rounded-full ${
@@ -177,10 +177,10 @@ export default function QuotationDetailDialog({
 
             {/* Actions */}
             <div className="flex justify-end gap-3 pt-4 border-t border-border">
-              <Button variant="outline" onClick={() => onOpenChange(false)}>
+              <Button variant="outline" onClick={() => onOpenChange(false)} className="btn-interactive">
                 Close
               </Button>
-              <Button onClick={() => setPrintPreviewOpen(true)}>
+              <Button onClick={() => setPrintPreviewOpen(true)} className="btn-interactive">
                 <Printer className="mr-2 h-4 w-4" />
                 Print Preview
               </Button>

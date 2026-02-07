@@ -7,10 +7,18 @@
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-remove-any-post-login-user-option-selection-step-so-that-immediately-after-a-successful-internet-identity-login-the-app-renders-the-main-dashboard-appshell-without-requiring-the-user-to-choose-an-option",
-      "title": "Remove any post-login user-option/selection step so that immediately after a successful Internet Identity login the app renders the main dashboard (AppShell) without requiring the user to choose an option.",
+      "id": "feature-remove-the-profile-setup-flow-so-authenticated-users-are-never-prompted-to-complete-a-set-up-your-profile-dialog-and-the-app-remains-usable-even-when-the-caller-has-no-saved-profile",
+      "title": "Remove the profile setup flow so authenticated users are never prompted to complete a \"Set up your profile\" dialog, and the app remains usable even when the caller has no saved profile.",
       "reqIds": [
         "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-change-the-user-interface-with-a-cohesive-consistent-visual-refresh-across-the-login-screen-header-tab-navigation-page-surfaces-and-dialogs-colors-typography-spacing-and-component-styling-use-english-for-all-user-facing-text",
+      "title": "Update/change the user interface with a cohesive, consistent visual refresh across the login screen, header, tab navigation, page surfaces, and dialogs (colors, typography, spacing, and component styling). Use English for all user-facing text.",
+      "reqIds": [
+        "REQ-2"
       ],
       "version": 1
     }
@@ -18,20 +26,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Skip any post-login user-option selection and redirect users directly to the dashboard after login",
+      "summary": "Remove the \"setup profile\" option and update/change the user interface accordingly",
       "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Ensure that first-time profile setup (when the caller profile is missing) does not block entry into the dashboard; it may appear as a modal on top of the dashboard, but the user must still be taken directly to the dashboard shell after login.",
-      "reqIds": [
-        "REQ-2"
-      ],
       "status": "pending"
     }
   ],
-  "projectName": "Skip post-login user option and go directly to dashboard",
+  "projectName": "Remove profile setup flow and refresh UI styling",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

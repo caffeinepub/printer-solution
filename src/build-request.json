@@ -1,50 +1,55 @@
 {
   "kind": "build_request",
-  "title": "Skip post-login user option and go directly to dashboard",
+  "title": "Remove profile setup flow and refresh UI styling",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Remove any post-login user-option/selection step so that immediately after a successful Internet Identity login the app renders the main dashboard (AppShell) without requiring the user to choose an option.",
+      "text": "Remove the profile setup flow so authenticated users are never prompted to complete a \"Set up your profile\" dialog, and the app remains usable even when the caller has no saved profile.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-6"
         ],
         "quotes": [
-          "do not use user option after login get directoly to dashboard"
+          "remove setup profile  option"
         ]
       },
       "acceptanceCriteria": [
-        "After a successful Internet Identity login, the first screen shown is the main dashboard (AppShell).",
-        "No intermediate screen/dialog that asks the user to pick a 'user option' is shown after login.",
-        "The dashboard loads with its normal default tab selection (current default is the Clients tab)."
+        "After login, the app navigates directly to the main AppShell without showing any profile setup modal/dialog.",
+        "There are no UI elements labeled \"Set up your profile\" or \"Welcome! Set up your profile\" in the running app.",
+        "If getCallerUserProfile returns null, the header area does not show a broken/empty profile section and the rest of the app functions normally (tabs/pages load)."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Ensure that first-time profile setup (when the caller profile is missing) does not block entry into the dashboard; it may appear as a modal on top of the dashboard, but the user must still be taken directly to the dashboard shell after login.",
+      "text": "Update/change the user interface with a cohesive, consistent visual refresh across the login screen, header, tab navigation, page surfaces, and dialogs (colors, typography, spacing, and component styling). Use English for all user-facing text.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-6"
         ],
         "quotes": [
-          "do not use user option after login get directoly to dashboard"
+          "change user interface"
         ]
       },
       "acceptanceCriteria": [
-        "When the caller has no saved profile, the dashboard (AppShell) is still rendered immediately after login.",
-        "If a profile setup prompt is required, it appears as an overlay/modal on top of the dashboard rather than replacing it with a separate step/page."
+        "The updated UI applies a consistent theme across: LoginPage, AppShell header, TabsList/TabsTrigger navigation, and page content containers.",
+        "Dialogs/popups use a solid, non-transparent surface with readable foreground text in both light and dark mode.",
+        "Dashboard tabs have a consistent accent color for active/hover/focus states and an obvious active indicator.",
+        "No user-facing strings introduced by this change are non-English."
       ]
     }
   ],
   "constraints": [
-    "Do not edit any files under frontend/src/hooks/useInternetIdentity.ts or frontend/src/hooks/useActor.ts (immutable paths)."
+    "Do not modify files under frontend/src/components/ui (Shadcn UI sources); compose them via props/className or via project CSS.",
+    "Do not edit frontend/src/hooks/useInternetIdentity.ts / .tsx, frontend/src/hooks/useActor.ts, or frontend/src/main.tsx (immutable paths).",
+    "Keep backend architecture as a single Motoko actor; do not introduce additional canisters/services."
   ],
   "nonGoals": [
-    "Changing authentication provider (must continue using Internet Identity).",
-    "Adding new onboarding flows beyond removing the post-login option/selection step."
+    "Do not add new authentication methods beyond Internet Identity.",
+    "Do not add new profile editing features/screens unless explicitly requested.",
+    "Do not change backend data models or add migrations as part of this UI-only request."
   ],
   "imageRequirements": {
     "required": [],

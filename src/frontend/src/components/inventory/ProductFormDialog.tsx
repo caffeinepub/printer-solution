@@ -25,9 +25,6 @@ interface ProductFormDialogProps {
 
 export default function ProductFormDialog({ open, onOpenChange, product }: ProductFormDialogProps) {
   const [name, setName] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [description, setDescription] = useState('');
-  const [details, setDetails] = useState('');
   const [productType, setProductType] = useState('');
   const [size, setSize] = useState('');
   const [printingSide, setPrintingSide] = useState('');
@@ -36,6 +33,9 @@ export default function ProductFormDialog({ open, onOpenChange, product }: Produ
   const [foiling, setFoiling] = useState(false);
   const [defaultQuotationQuantity, setDefaultQuotationQuantity] = useState('');
   const [pricePerUnit, setPricePerUnit] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [description, setDescription] = useState('');
+  const [details, setDetails] = useState('');
   const [error, setError] = useState('');
 
   const addProduct = useAddProduct();
@@ -47,22 +47,19 @@ export default function ProductFormDialog({ open, onOpenChange, product }: Produ
   useEffect(() => {
     if (product) {
       setName(product.name);
-      setQuantity(product.quantity.toString());
-      setDescription(product.description || '');
-      setDetails(product.details || '');
-      setProductType(product.productSpec.productType || '');
-      setSize(product.productSpec.size || '');
-      setPrintingSide(product.productSpec.printingSide || '');
-      setLamination(product.productSpec.lamination || '');
-      setSpotUV(product.productSpec.spotUV || false);
-      setFoiling(product.productSpec.foiling || false);
+      setProductType(product.productSpec.productType);
+      setSize(product.productSpec.size);
+      setPrintingSide(product.productSpec.printingSide);
+      setLamination(product.productSpec.lamination);
+      setSpotUV(product.productSpec.spotUV);
+      setFoiling(product.productSpec.foiling);
       setDefaultQuotationQuantity(product.defaultQuotationQuantity.toString());
       setPricePerUnit(product.pricePerUnit.toString());
+      setQuantity(product.quantity.toString());
+      setDescription(product.description);
+      setDetails(product.details);
     } else {
       setName('');
-      setQuantity('');
-      setDescription('');
-      setDetails('');
       setProductType('');
       setSize('');
       setPrintingSide('');
@@ -71,6 +68,9 @@ export default function ProductFormDialog({ open, onOpenChange, product }: Produ
       setFoiling(false);
       setDefaultQuotationQuantity('');
       setPricePerUnit('');
+      setQuantity('');
+      setDescription('');
+      setDetails('');
     }
     setError('');
   }, [product, open]);
@@ -79,52 +79,34 @@ export default function ProductFormDialog({ open, onOpenChange, product }: Produ
     e.preventDefault();
     setError('');
 
-    if (!name.trim() || !quantity || !pricePerUnit) {
-      setError('Product name, quantity, and price per unit are required');
-      return;
-    }
-
-    const quantityNum = Number(quantity);
-    const priceNum = Number(pricePerUnit);
-    const defaultQtyNum = Number(defaultQuotationQuantity) || 1;
-
-    if (quantityNum < 0 || priceNum < 0 || defaultQtyNum < 0) {
-      setError('Numeric values must be positive');
+    if (!name.trim() || !pricePerUnit || !quantity) {
+      setError('Name, price per unit, and quantity are required');
       return;
     }
 
     try {
+      const productData = {
+        name: name.trim(),
+        productType: productType.trim(),
+        size: size.trim(),
+        printingSide: printingSide.trim(),
+        lamination: lamination.trim(),
+        spotUV,
+        foiling,
+        defaultQuotationQuantity: BigInt(defaultQuotationQuantity || '0'),
+        pricePerUnit: parseFloat(pricePerUnit),
+        quantity: BigInt(quantity),
+        description: description.trim(),
+        details: details.trim(),
+      };
+
       if (isEditing) {
         await updateProduct.mutateAsync({
           id: product.id,
-          name: name.trim(),
-          productType: productType.trim(),
-          size: size.trim(),
-          printingSide: printingSide.trim(),
-          lamination: lamination.trim(),
-          spotUV,
-          foiling,
-          defaultQuotationQuantity: BigInt(defaultQtyNum),
-          pricePerUnit: priceNum,
-          quantity: BigInt(quantityNum),
-          description: description.trim(),
-          details: details.trim(),
+          ...productData,
         });
       } else {
-        await addProduct.mutateAsync({
-          name: name.trim(),
-          productType: productType.trim(),
-          size: size.trim(),
-          printingSide: printingSide.trim(),
-          lamination: lamination.trim(),
-          spotUV,
-          foiling,
-          defaultQuotationQuantity: BigInt(defaultQtyNum),
-          pricePerUnit: priceNum,
-          quantity: BigInt(quantityNum),
-          description: description.trim(),
-          details: details.trim(),
-        });
+        await addProduct.mutateAsync(productData);
       }
       onOpenChange(false);
     } catch (err) {
@@ -134,160 +116,154 @@ export default function ProductFormDialog({ open, onOpenChange, product }: Produ
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh]">
-        <DialogHeader>
+      <DialogContent className="popout-surface dialog-animate max-w-2xl max-h-[90vh]">
+        <DialogHeader className="popout-header-accent">
           <DialogTitle>{isEditing ? 'Edit Product' : 'Add New Product'}</DialogTitle>
           <DialogDescription>
             {isEditing ? 'Update product information' : 'Enter product details'}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="max-h-[calc(90vh-120px)] pr-4">
+        <ScrollArea className="max-h-[calc(90vh-8rem)] pr-4">
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2 col-span-2">
-                <Label htmlFor="name">Product Name *</Label>
-                <Input
-                  id="name"
-                  placeholder="Enter product name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  disabled={mutation.isPending}
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="name">Product Name *</Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                disabled={mutation.isPending}
+                className="focus-visible:ring-primary"
+              />
+            </div>
 
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="productType">Product Type</Label>
                 <Input
                   id="productType"
-                  placeholder="e.g., Business Card, Brochure"
                   value={productType}
                   onChange={(e) => setProductType(e.target.value)}
                   disabled={mutation.isPending}
+                  className="focus-visible:ring-primary"
                 />
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="size">Size</Label>
                 <Input
                   id="size"
-                  placeholder="e.g., A4, 3.5x2 inches"
                   value={size}
                   onChange={(e) => setSize(e.target.value)}
                   disabled={mutation.isPending}
+                  className="focus-visible:ring-primary"
                 />
               </div>
+            </div>
 
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="printingSide">Printing Side</Label>
                 <Input
                   id="printingSide"
-                  placeholder="e.g., Single, Double"
                   value={printingSide}
                   onChange={(e) => setPrintingSide(e.target.value)}
                   disabled={mutation.isPending}
+                  className="focus-visible:ring-primary"
                 />
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="lamination">Lamination</Label>
                 <Input
                   id="lamination"
-                  placeholder="e.g., Matte, Glossy, None"
                   value={lamination}
                   onChange={(e) => setLamination(e.target.value)}
                   disabled={mutation.isPending}
+                  className="focus-visible:ring-primary"
                 />
               </div>
+            </div>
 
-              <div className="flex items-center space-x-4 pt-8">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="spotUV"
-                    checked={spotUV}
-                    onCheckedChange={(checked) => setSpotUV(checked as boolean)}
-                    disabled={mutation.isPending}
-                  />
-                  <Label htmlFor="spotUV" className="cursor-pointer">
-                    Spot UV
-                  </Label>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="foiling"
-                    checked={foiling}
-                    onCheckedChange={(checked) => setFoiling(checked as boolean)}
-                    disabled={mutation.isPending}
-                  />
-                  <Label htmlFor="foiling" className="cursor-pointer">
-                    Foiling
-                  </Label>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="quantity">Quantity in Stock *</Label>
-                <Input
-                  id="quantity"
-                  type="number"
-                  min="0"
-                  placeholder="Enter quantity"
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.value)}
+            <div className="flex gap-6">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="spotUV"
+                  checked={spotUV}
+                  onCheckedChange={(checked) => setSpotUV(checked as boolean)}
                   disabled={mutation.isPending}
+                  className="focus-visible:ring-primary"
                 />
+                <Label htmlFor="spotUV" className="cursor-pointer">Spot UV</Label>
               </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="foiling"
+                  checked={foiling}
+                  onCheckedChange={(checked) => setFoiling(checked as boolean)}
+                  disabled={mutation.isPending}
+                  className="focus-visible:ring-primary"
+                />
+                <Label htmlFor="foiling" className="cursor-pointer">Foiling</Label>
+              </div>
+            </div>
 
+            <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="defaultQuotationQuantity">Default Quotation Quantity</Label>
+                <Label htmlFor="defaultQuotationQuantity">Default Quotation Qty</Label>
                 <Input
                   id="defaultQuotationQuantity"
                   type="number"
-                  min="0"
-                  placeholder="Default quantity for quotations"
                   value={defaultQuotationQuantity}
                   onChange={(e) => setDefaultQuotationQuantity(e.target.value)}
                   disabled={mutation.isPending}
+                  className="focus-visible:ring-primary"
                 />
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="pricePerUnit">Price per Unit *</Label>
                 <Input
                   id="pricePerUnit"
                   type="number"
-                  min="0"
                   step="0.01"
-                  placeholder="Enter price per unit"
                   value={pricePerUnit}
                   onChange={(e) => setPricePerUnit(e.target.value)}
                   disabled={mutation.isPending}
+                  className="focus-visible:ring-primary"
                 />
               </div>
-
-              <div className="space-y-2 col-span-2">
-                <Label htmlFor="description">Description</Label>
+              <div className="space-y-2">
+                <Label htmlFor="quantity">Stock Quantity *</Label>
                 <Input
-                  id="description"
-                  placeholder="Brief product description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  id="quantity"
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
                   disabled={mutation.isPending}
+                  className="focus-visible:ring-primary"
                 />
               </div>
+            </div>
 
-              <div className="space-y-2 col-span-2">
-                <Label htmlFor="details">Details</Label>
-                <Textarea
-                  id="details"
-                  placeholder="Additional product details, specifications, or notes"
-                  value={details}
-                  onChange={(e) => setDetails(e.target.value)}
-                  disabled={mutation.isPending}
-                  rows={4}
-                  className="resize-none"
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                disabled={mutation.isPending}
+                rows={2}
+                className="focus-visible:ring-primary"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="details">Details</Label>
+              <Textarea
+                id="details"
+                value={details}
+                onChange={(e) => setDetails(e.target.value)}
+                disabled={mutation.isPending}
+                rows={3}
+                className="focus-visible:ring-primary"
+              />
             </div>
 
             {error && (
@@ -303,11 +279,11 @@ export default function ProductFormDialog({ open, onOpenChange, product }: Produ
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={mutation.isPending}
-                className="flex-1"
+                className="flex-1 btn-interactive"
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={mutation.isPending} className="flex-1">
+              <Button type="submit" disabled={mutation.isPending} className="flex-1 btn-interactive">
                 {mutation.isPending ? 'Saving...' : isEditing ? 'Update' : 'Add Product'}
               </Button>
             </div>

@@ -119,7 +119,13 @@ export interface CompanyLogo {
     bytes: Uint8Array;
 }
 export interface CompanySettings {
+    cin: string;
+    pan: string;
     logo?: CompanyLogo;
+    placeOfWork: string;
+    addressLine1: string;
+    addressLine2: string;
+    addressLine3: string;
     gstin: string;
     address: string;
     companyName: string;
@@ -574,20 +580,38 @@ function from_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Ar
     return value.length === 0 ? null : from_candid_CompanySettings_n8(_uploadFile, _downloadFile, value[0]);
 }
 function from_candid_record_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    cin: string;
+    pan: string;
     logo: [] | [_CompanyLogo];
+    placeOfWork: string;
+    addressLine1: string;
+    addressLine2: string;
+    addressLine3: string;
     gstin: string;
     address: string;
     companyName: string;
     gstRate: number;
 }): {
+    cin: string;
+    pan: string;
     logo?: CompanyLogo;
+    placeOfWork: string;
+    addressLine1: string;
+    addressLine2: string;
+    addressLine3: string;
     gstin: string;
     address: string;
     companyName: string;
     gstRate: number;
 } {
     return {
+        cin: value.cin,
+        pan: value.pan,
         logo: record_opt_to_undefined(from_candid_opt_n10(_uploadFile, _downloadFile, value.logo)),
+        placeOfWork: value.placeOfWork,
+        addressLine1: value.addressLine1,
+        addressLine2: value.addressLine2,
+        addressLine3: value.addressLine3,
         gstin: value.gstin,
         address: value.address,
         companyName: value.companyName,
@@ -613,20 +637,38 @@ function to_candid_opt_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Arra
     return value === null ? candid_none() : candid_some(value);
 }
 function to_candid_record_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    cin: string;
+    pan: string;
     logo?: CompanyLogo;
+    placeOfWork: string;
+    addressLine1: string;
+    addressLine2: string;
+    addressLine3: string;
     gstin: string;
     address: string;
     companyName: string;
     gstRate: number;
 }): {
+    cin: string;
+    pan: string;
     logo: [] | [_CompanyLogo];
+    placeOfWork: string;
+    addressLine1: string;
+    addressLine2: string;
+    addressLine3: string;
     gstin: string;
     address: string;
     companyName: string;
     gstRate: number;
 } {
     return {
+        cin: value.cin,
+        pan: value.pan,
         logo: value.logo ? candid_some(value.logo) : candid_none(),
+        placeOfWork: value.placeOfWork,
+        addressLine1: value.addressLine1,
+        addressLine2: value.addressLine2,
+        addressLine3: value.addressLine3,
         gstin: value.gstin,
         address: value.address,
         companyName: value.companyName,

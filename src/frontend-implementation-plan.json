@@ -1,51 +1,78 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Directly render dashboard after Internet Identity login",
+  "title": "Remove profile setup gating and apply cohesive UI refresh",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Remove any post-login user option/selection step and transition directly from successful Internet Identity login to the main dashboard (AppShell).",
+      "summary": "Eliminate the profile setup modal flow and ensure the app works when the caller has no saved profile.",
       "acceptanceCriteria": [
-        "After a successful Internet Identity login, the first screen shown is the main dashboard (AppShell).",
-        "No intermediate screen/dialog that asks the user to pick a 'user option' is shown after login.",
-        "The dashboard loads with its normal default tab selection (current default is the Clients tab)."
+        "After login, the app navigates directly to the main AppShell without showing any profile setup modal/dialog.",
+        "There are no UI elements labeled \"Set up your profile\" or \"Welcome! Set up your profile\" in the running app.",
+        "If getCallerUserProfile returns null, the header area does not show a broken/empty profile section and the rest of the app functions normally (tabs/pages load)."
       ],
       "file_operations": [
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Ensure authenticated rendering flows directly to AppShell without any intermediate post-login selection state; keep AppShell mounted immediately after identity is available. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/LoginPage.tsx",
-          "operation": "modify",
-          "description": "Remove the demo username/password gating so Internet Identity login is the only action needed to enter the app; present a single Internet Identity login button and rely on App.tsx to render AppShell immediately after successful login. Verify the component's usage instructions before implementing."
+          "description": "Remove all conditional rendering/wiring for the ProfileSetupDialog (no gating UI when getCallerUserProfile is null); authenticated users should always render AppShell directly. Keep existing Internet Identity login/logout behavior and query cache clearing aligned with the selected \"authorization\" component guidance. Verify the component's usage instructions before implementing."
         },
         {
           "path": "frontend/src/components/AppShell.tsx",
           "operation": "modify",
-          "description": "Confirm the default active tab remains 'clients' on initial render so the dashboard opens to the Clients tab after login; avoid introducing any new post-login selection UI. Verify the component's usage instructions before implementing."
+          "description": "Harden header rendering for missing userProfile (null) by showing a stable fallback identity block (e.g., generic label) without empty/broken UI; ensure all tabs/pages still render and remain usable. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/ProfileSetupDialog.tsx",
+          "operation": "delete",
+          "description": "Remove the ProfileSetupDialog component entirely to ensure no residual \"Welcome! Set up your profile\" / \"Set up your profile\" strings or UI remain in the app. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Show first-time profile setup as a modal overlay on top of the dashboard without blocking entry into the dashboard shell after login.",
+      "summary": "Apply a cohesive visual refresh across login, header, tabs, page surfaces, and dialogs with consistent theme, spacing, and readable dialog surfaces in light/dark mode (English-only UI text).",
       "acceptanceCriteria": [
-        "When the caller has no saved profile, the dashboard (AppShell) is still rendered immediately after login.",
-        "If a profile setup prompt is required, it appears as an overlay/modal on top of the dashboard rather than replacing it with a separate step/page."
+        "The updated UI applies a consistent theme across: LoginPage, AppShell header, TabsList/TabsTrigger navigation, and page content containers.",
+        "Dialogs/popups use a solid, non-transparent surface with readable foreground text in both light and dark mode.",
+        "Dashboard tabs have a consistent accent color for active/hover/focus states and an obvious active indicator.",
+        "No user-facing strings introduced by this change are non-English."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Keep AppShell rendered immediately after authentication and conditionally mount ProfileSetupDialog as an overlay when getCallerUserProfile returns null (per the authorization component guidance to prevent modal flash). Verify the component's usage instructions before implementing."
+          "description": "Refresh global theme tokens and shared utility classes to ensure consistent typography/spacing and a cohesive accent system; update dialog surface styles so dialogs/popups use solid, non-transparent surfaces with readable foreground in both light and dark mode (avoid dark-mode overrides that force unreadable contrast). Keep styling changes via CSS/classes only (do not modify shadcn ui sources under frontend/src/components/ui). Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/components/ProfileSetupDialog.tsx",
+          "path": "frontend/tailwind.config.js",
           "operation": "modify",
-          "description": "Ensure the profile setup UI remains an overlay/modal (not a separate page) and closes automatically after saving by relying on the currentUserProfile query invalidation (so App.tsx unmounts the dialog once the profile exists). Verify the component's usage instructions before implementing."
+          "description": "Adjust Tailwind theme extensions as needed to support the refreshed design system (e.g., shadows/radii/typography consistency) without introducing new global stylesheet entry points. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/LoginPage.tsx",
+          "operation": "modify",
+          "description": "Update the login screen styling to match the refreshed theme (layout, spacing, card surface, button styling), keeping all user-facing text in English. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/AppShell.tsx",
+          "operation": "modify",
+          "description": "Update header, tab navigation, and page surface styling for consistent spacing/typography and clearer active/hover/focus states on dashboard tabs (accent color + obvious active indicator), aligning with the refreshed theme. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/company/CompanySettingsDialog.tsx",
+          "operation": "modify",
+          "description": "Align dialog styling (surface, header, form spacing, buttons) with the refreshed dialog theme to ensure solid non-transparent surfaces and readable text in light/dark mode; keep all strings in English. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/UserManagementDialog.tsx",
+          "operation": "modify",
+          "description": "Align dialog styling (surface, header, form controls, alerts) with refreshed dialog theme for readability and consistency across light/dark mode; ensure any new strings remain English. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/dialogs/ConfirmDialog.tsx",
+          "operation": "modify",
+          "description": "Ensure confirmation dialogs use the refreshed solid dialog surface styling and consistent button/typography treatment; preserve English-only labels. Verify the component's usage instructions before implementing."
         }
       ]
     }

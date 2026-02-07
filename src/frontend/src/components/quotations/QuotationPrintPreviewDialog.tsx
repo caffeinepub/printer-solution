@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useGetAllClients, useGetCompanySettings } from '../../hooks/useQueries';
 import {
   Dialog,
   DialogContent,
@@ -8,14 +8,13 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Printer } from 'lucide-react';
-import { useGetClient, useGetCompanySettings } from '../../hooks/useQueries';
 import QuotationPrintView from './QuotationPrintView';
 import type { Quotation } from '../../backend';
 
 interface QuotationPrintPreviewDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  quotation: Quotation | null;
+  quotation: Quotation;
 }
 
 export default function QuotationPrintPreviewDialog({
@@ -23,43 +22,54 @@ export default function QuotationPrintPreviewDialog({
   onOpenChange,
   quotation,
 }: QuotationPrintPreviewDialogProps) {
-  const { data: client } = useGetClient(quotation?.clientId || null);
+  const { data: clients = [] } = useGetAllClients();
   const { data: companySettings } = useGetCompanySettings();
 
-  useEffect(() => {
-    const handleAfterPrint = () => {
-      document.body.classList.remove('printing-quotation');
-    };
-
-    window.addEventListener('afterprint', handleAfterPrint);
-    return () => window.removeEventListener('afterprint', handleAfterPrint);
-  }, []);
+  const client = clients.find((c) => c.id === quotation.clientId);
 
   const handlePrint = () => {
-    document.body.classList.add('printing-quotation');
     window.print();
   };
 
-  if (!quotation || !client) {
-    return null;
+  if (!client) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="popout-surface dialog-animate max-w-4xl max-h-[90vh]">
+          <DialogHeader className="popout-header-accent">
+            <DialogTitle>Print Preview - Quotation</DialogTitle>
+            <DialogDescription>Client not found</DialogDescription>
+          </DialogHeader>
+          <div className="py-8 text-center text-muted-foreground">
+            Unable to load client information for this quotation.
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="print-hide">
-          <DialogTitle>Quotation Preview</DialogTitle>
-          <DialogDescription>Review and print quotation</DialogDescription>
+      <DialogContent className="popout-surface dialog-animate max-w-4xl max-h-[90vh]">
+        <DialogHeader className="popout-header-accent">
+          <DialogTitle>Print Preview - Quotation</DialogTitle>
+          <DialogDescription>
+            Review the quotation before printing
+          </DialogDescription>
         </DialogHeader>
-
-        <div className="print-hide mb-4">
-          <Button onClick={handlePrint} className="w-full">
-            <Printer className="mr-2 h-4 w-4" />
-            Print Quotation (A4)
-          </Button>
+        <div className="space-y-4">
+          <div className="border rounded-lg p-4 max-h-[60vh] overflow-y-auto bg-white">
+            <QuotationPrintView quotation={quotation} client={client} companySettings={companySettings} />
+          </div>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={() => onOpenChange(false)} className="btn-interactive">
+              Close
+            </Button>
+            <Button onClick={handlePrint} className="btn-interactive">
+              <Printer className="mr-2 h-4 w-4" />
+              Print (A4)
+            </Button>
+          </div>
         </div>
-
-        <QuotationPrintView quotation={quotation} client={client} companySettings={companySettings} />
       </DialogContent>
     </Dialog>
   );

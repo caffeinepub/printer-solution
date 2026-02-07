@@ -75,7 +75,13 @@ export const CompanyLogo = IDL.Record({
   'bytes' : IDL.Vec(IDL.Nat8),
 });
 export const CompanySettings = IDL.Record({
+  'cin' : IDL.Text,
+  'pan' : IDL.Text,
   'logo' : IDL.Opt(CompanyLogo),
+  'placeOfWork' : IDL.Text,
+  'addressLine1' : IDL.Text,
+  'addressLine2' : IDL.Text,
+  'addressLine3' : IDL.Text,
   'gstin' : IDL.Text,
   'address' : IDL.Text,
   'companyName' : IDL.Text,
@@ -247,7 +253,13 @@ export const idlFactory = ({ IDL }) => {
     'bytes' : IDL.Vec(IDL.Nat8),
   });
   const CompanySettings = IDL.Record({
+    'cin' : IDL.Text,
+    'pan' : IDL.Text,
     'logo' : IDL.Opt(CompanyLogo),
+    'placeOfWork' : IDL.Text,
+    'addressLine1' : IDL.Text,
+    'addressLine2' : IDL.Text,
+    'addressLine3' : IDL.Text,
     'gstin' : IDL.Text,
     'address' : IDL.Text,
     'companyName' : IDL.Text,

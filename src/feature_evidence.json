@@ -2,10 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-any-post-login-user-option-selection-step-so-that-immediately-after-a-successful-internet-identity-login-the-app-renders-the-main-dashboard-appshell-without-requiring-the-user-to-choose-an-option",
-      "featureTitle": "Remove any post-login user-option/selection step so that immediately after a successful Internet Identity login the app renders the main dashboard (AppShell) without requiring the user to choose an option.",
+      "featureId": "feature-remove-the-profile-setup-flow-so-authenticated-users-are-never-prompted-to-complete-a-set-up-your-profile-dialog-and-the-app-remains-usable-even-when-the-caller-has-no-saved-profile",
+      "featureTitle": "Remove the profile setup flow so authenticated users are never prompted to complete a \"Set up your profile\" dialog, and the app remains usable even when the caller has no saved profile.",
       "files": [
-        "frontend/src/pages/LoginPage.tsx"
+        "frontend/src/App.tsx",
+        "frontend/src/components/AppShell.tsx",
+        "frontend/src/components/ProfileSetupDialog.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -17,6 +19,31 @@
       ],
       "testIds": [
         "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-change-the-user-interface-with-a-cohesive-consistent-visual-refresh-across-the-login-screen-header-tab-navigation-page-surfaces-and-dialogs-colors-typography-spacing-and-component-styling-use-english-for-all-user-facing-text",
+      "featureTitle": "Update/change the user interface with a cohesive, consistent visual refresh across the login screen, header, tab navigation, page surfaces, and dialogs (colors, typography, spacing, and component styling). Use English for all user-facing text.",
+      "files": [
+        "frontend/src/components/AppShell.tsx",
+        "frontend/src/components/UserManagementDialog.tsx",
+        "frontend/src/components/company/CompanySettingsDialog.tsx",
+        "frontend/src/components/dialogs/ConfirmDialog.tsx",
+        "frontend/src/index.css",
+        "frontend/src/pages/LoginPage.tsx",
+        "frontend/tailwind.config.js"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
       ],
       "confidence": "high"
     }

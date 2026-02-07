@@ -36,14 +36,16 @@ export default function ConfirmDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
+      <AlertDialogContent className="dialog-surface">
+        <AlertDialogHeader className="dialog-header">
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>{cancelText}</AlertDialogCancel>
-          <AlertDialogAction onClick={handleConfirm} disabled={isLoading}>
+          <AlertDialogCancel disabled={isLoading} className="btn-interactive">
+            {cancelText}
+          </AlertDialogCancel>
+          <AlertDialogAction onClick={handleConfirm} disabled={isLoading} className="btn-interactive">
             {isLoading ? 'Processing...' : confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>

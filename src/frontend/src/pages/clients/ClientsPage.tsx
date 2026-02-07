@@ -47,14 +47,14 @@ export default function ClientsPage() {
 
   return (
     <>
-      <Card>
+      <Card className="border-0 shadow-none">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Client Management</CardTitle>
               <CardDescription>Manage your clients and their information</CardDescription>
             </div>
-            <Button onClick={handleAdd}>
+            <Button onClick={handleAdd} className="btn-interactive">
               <Plus className="mr-2 h-4 w-4" />
               Add Client
             </Button>
@@ -64,7 +64,7 @@ export default function ClientsPage() {
           {clients.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground mb-4">No clients yet</p>
-              <Button onClick={handleAdd} variant="outline">
+              <Button onClick={handleAdd} variant="outline" className="btn-interactive">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Your First Client
               </Button>
@@ -81,7 +81,7 @@ export default function ClientsPage() {
               </TableHeader>
               <TableBody>
                 {clients.map((client) => (
-                  <TableRow key={client.id.toString()}>
+                  <TableRow key={client.id.toString()} className="row-interactive">
                     <TableCell className="font-medium">{client.name}</TableCell>
                     <TableCell>{client.contactDetails}</TableCell>
                     <TableCell>{client.address}</TableCell>
@@ -91,6 +91,7 @@ export default function ClientsPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => setViewingClient(client)}
+                          className="btn-interactive"
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
@@ -98,6 +99,7 @@ export default function ClientsPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleEdit(client)}
+                          className="btn-interactive"
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>
@@ -105,6 +107,7 @@ export default function ClientsPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => setDeletingClient(client)}
+                          className="btn-interactive"
                         >
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
